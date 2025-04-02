@@ -1,0 +1,216 @@
+asyncapi: 3.0.0
+
+info:
+  title: Howestprime microservice movies
+  version: 1.0.0
+  description: AsyncAPI specification for Howestprime microservice movies
+  contact:
+    name: your name
+    email: student@student.howest.be
+
+defaultContentType: application/json
+
+servers:
+  messagebroker:
+    host: 'localhost:5672'
+    protocol: amqp
+    description: LavinMQ message broker
+
+channels:
+  howestprime.movies.BookingOpened:
+    address: howestprime.movies.BookingOpened
+    messages:
+      BookingOpened:
+        $ref: '#/components/messages/BookingOpened'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: howestprime
+          type: topic
+          routingKey: howestprime.movies.BookingOpened
+
+  howestprime.movies.MovieRegistered:
+    address: howestprime.movies.MovieRegistered
+    messages:
+      MovieRegistered:
+        $ref: '#/components/messages/MovieRegistered'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: howestprime
+          type: topic
+          routingKey: howestprime.movies.MovieRegistered
+
+  howestprime.movies.MovieDetailsChanged:
+    address: howestprime.movies.MovieDetailsChanged
+    messages:
+      MovieDetailsChanged:
+        $ref: '#/components/messages/MovieDetailsChanged'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: howestprime
+          type: topic
+          routingKey: howestprime.movies.MovieDetailsChanged
+
+  howestprime.ticketing.PaymentFailed:
+    address: howestprime.ticketing.PaymentFailed
+    messages:
+      PaymentFailed:
+        $ref: '#/components/messages/PaymentFailed'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: howestprime
+          type: topic
+          routingKey: howestprime.ticketing.PaymentFailed
+
+  howestprime.ticketing.PaymentSuccess:
+    address: howestprime.ticketing.PaymentSuccess
+    messages:
+      PaymentSuccess:
+        $ref: '#/components/messages/PaymentSuccess'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: howestprime
+          type: topic
+          routingKey: howestprime.ticketing.PaymentSuccess
+
+operations:
+  BookingOpened:
+    action: send
+    channel:
+      $ref: '#/channels/howestprime.movies.BookingOpened'
+    summary: Booking opened event
+    messages:
+      - $ref: >-
+          #/channels/howestprime.movies.BookingOpened/messages/BookingOpened
+  MovieRegistered:
+    action: send
+    channel:
+      $ref: '#/channels/howestprime.movies.MovieRegistered'
+    summary: New Movie Registered
+    messages:
+      - $ref: >-
+          #/channels/howestprime.movies.MovieRegistered/messages/MovieRegistered
+
+  MovieDetailsChanged:
+    action: send
+    channel:
+      $ref: '#/channels/howestprime.movies.MovieDetailsChanged'
+    summary: Movie details changed event
+    messages:
+      - $ref: >-
+          #/channels/howestprime.movies.MovieDetailsChanged/messages/MovieDetailsChanged
+  
+  CloseBookingWhenPaymentFailed:
+    action: receive
+    channel:
+      $ref: '#/channels/howestprime.ticketing.PaymentFailed'
+    summary: Payment failed event
+    messages:
+      - $ref: >-
+          #/channels/howestprime.ticketing.PaymentFailed/messages/PaymentFailed
+  CloseBookingWhenPaymentSuccess:
+    action: receive
+    channel:
+      $ref: '#/channels/howestprime.ticketing.PaymentSuccess'
+    summary: Payment success event
+    messages:
+      - $ref: >-
+          #/channels/howestprime.ticketing.PaymentSuccess/messages/PaymentSuccess
+
+components:
+  messages:
+    BookingOpened:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/BookingOpened'
+    MovieRegistered:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Movie'
+    MovieDetailsChanged:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Movie'
+    PaymentFailed:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PaymentFailed'
+    PaymentSuccess:
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PaymentSuccess'
+  schemas:
+    BookingOpened:
+      type: object
+      properties:
+        BookingId:
+          type: string
+          format: uuid
+        MovieId:
+          type: string
+          format: uuid
+        RoomId:
+          type: string
+          format: uuid
+        Time:
+          type: string
+          format: date-time
+        StandardVisitors:
+          type: integer
+        DiscountedVisitors:
+          type: integer
+        SeatNumbers:
+          type: array
+          items:
+            type: integer
+    Movie:
+      type: object
+      properties:
+        MovieId:
+          type: string
+          format: uuid
+        Title:
+          type: string
+        Genre:
+          type: string
+        Actors:
+          type: string
+        Duration:
+          type: integer
+        AgeRating:
+          type: integer
+        PosterUrl:
+          type: string
+    PaymentFailed:
+      type: object
+      properties:
+        BookingId:
+          type: string
+          format: uuid
+        PaymentId:
+          type: string
+          format: uuid
+        OrderId:
+          type: string
+          format: uuid
+    PaymentSuccess:
+      type: object
+      properties:
+        BookingId:
+          type: string
+          format: uuid
+        PaymentId:
+          type: string
+          format: uuid
+        OrderId:
+          type: string
+          format: uuid

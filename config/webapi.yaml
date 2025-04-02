@@ -1,0 +1,935 @@
+  openapi: 3.0.0
+  servers:
+    # Added by API Auto Mocking Plugin
+    - description: SwaggerHub API Auto Mocking
+      url: https://virtserver.swaggerhub.com/MATTHIASBLOMME_1/microservice-movies/1.0.0
+  info:
+    description: This is a simple API
+    version: "1.0.0"
+    title: Simple Inventory API
+    contact:
+      email: you@your-company.com
+    license:
+      name: Apache 2.0
+      url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  tags:
+    - name: admins
+      description: Secured Admin-only calls
+    - name: developers
+      description: Operations available to regular developers
+  paths:
+    /api/movie-events:
+      get:
+        tags:
+        - Movie Events
+        description: List all movie events per movie in the next two weeks.
+        operationId: FindMovieWithEventsInTimeframeController
+        parameters:
+        - name: Title
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: Genre
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/MoviesWithEvents'
+                example:
+                  data:
+                  - id: 123e4567-e89b-12d3-a456-426614174100
+                    title: Inception
+                    genre: Sci-Fi
+                    description: A mind-bending thriller
+                    year: 2010
+                    duration: 148
+                    actors: "Leonardo DiCaprio, Joseph Gordon-Levitt"
+                    ageRating: 13
+                    posterUrl: http://example.com/inception.jpg
+                    events:
+                  - id: 123e4567-e89b-12d3-a456-426614174101
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: IMAX Theater
+                      capacity: 200
+                    time: 2025-05-15T15:00:00Z
+                    
+                    capacity: 150
+                  - id: 123e4567-e89b-12d3-a456-426614174102
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: VIP Hall
+                      capacity: 50
+                    time: 2025-05-16T22:00:00Z
+                    
+                    capacity: 45
+                  - id: 123e4567-e89b-12d3-a456-426614174103
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: Standard Hall
+                      capacity: 120
+                    time: 2025-05-18T19:00:00Z
+                    
+                    capacity: 100
+                  - id: 123e4567-e89b-12d3-a456-426614174200
+                    title: Interstellar
+                    genre: Sci-Fi
+                    description: A journey through space and time
+                    year: 2014
+                    duration: 169
+                    actors: "Matthew McConaughey, Anne Hathaway"
+                    ageRating: 13
+                    posterUrl: http://example.com/interstellar.jpg
+                    events:
+                  - id: 123e4567-e89b-12d3-a456-426614174201
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: IMAX Theater
+                      capacity: 200
+                    time: 2025-05-16T21:00:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174200
+                    capacity: 180
+                  - id: 123e4567-e89b-12d3-a456-426614174202
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: VIP Hall
+                      capacity: 50
+                    time: 2025-05-18T17:00:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174200
+                    capacity: 40
+                  - id: 123e4567-e89b-12d3-a456-426614174203
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: Standard Hall
+                      capacity: 120
+                    time: 2025-05-20T19:30:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174200
+                    capacity: 110
+                  - id: 123e4567-e89b-12d3-a456-426614174300
+                    title: The Dark Knight
+                    genre: Action
+                    description: A battle for Gotham
+                    year: 2008
+                    duration: 152
+                    actors: "Christian Bale, Heath Ledger"
+                    ageRating: 13
+                    posterUrl: http://example.com/dark-knight.jpg
+                    events:
+                  - id: 123e4567-e89b-12d3-a456-426614174301
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: IMAX Theater
+                      capacity: 200
+                    time: 2025-05-17T15:00:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174300
+                    capacity: 190
+                  - id: 123e4567-e89b-12d3-a456-426614174302
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: VIP Hall
+                      capacity: 50
+                    time: 2025-05-19T20:15:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174300
+                    capacity: 45
+                  - id: 123e4567-e89b-12d3-a456-426614174303
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: Standard Hall
+                      capacity: 120
+                    time: 2025-05-22T19:45:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174300
+                    capacity: 115
+          "400":
+            description: Bad Request
+      post:
+        tags:
+        - Movie Events
+        description: Schedule a movie event.
+        operationId: ScheduleMovieEventController
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleMovieEventBody'
+              example:
+                movieId: 123e4567-e89b-12d3-a456-426614174000
+                roomId: 123e4567-e89b-12d3-a456-426614174001
+                startDate: 2025-05-10T19:30:00Z
+          required: true
+        responses:
+          "201":
+            description: Created
+            headers:
+              Location:
+                description: The URI of the newly created movie event.
+                style: simple
+                explode: false
+                schema:
+                  type: string
+                example: /api/movie-events/123e4567-e89b-12d3-a456-426614174003
+          "400":
+            description: Bad Request
+    /api/movie-events/movie:
+      get:
+        tags:
+        - Movie Events
+        description: List all movie events for a specific movie.
+        operationId: FindMovieByIdWithEventsController
+        parameters:
+        - name: movieId
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/MovieWithEvents'
+                example:
+                  id: 123e4567-e89b-12d3-a456-426614174400
+                  title: Inception
+                  genre: Sci-Fi
+                  description: A mind-bending thriller
+                  year: 2010
+                  duration: 148
+                  actors: "Leonardo DiCaprio, Joseph Gordon-Levitt"
+                  ageRating: 13
+                  posterUrl: http://example.com/inception.jpg
+                  events:
+                  - id: 123e4567-e89b-12d3-a456-426614174401
+                    room:
+                      id: 123e4567-e89b-12d3-a456-426614174510
+                      name: IMAX Theater
+                      capacity: 200
+                    time: 2025-05-15T15:00:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174400
+                    capacity: 150
+                  - id: 123e4567-e89b-12d3-a456-426614174404
+                    room:
+                      id: 123e4567-e89b-12d3-a456-426614174514
+                      name: IMAX Theater
+                      capacity: 200
+                    time: 2025-05-15T17:00:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174400
+                    capacity: 150
+                  - id: 123e4567-e89b-12d3-a456-426614174402
+                    room:
+                      id: 123e4567-e89b-12d3-a456-426614174511
+                      name: VIP Hall
+                      capacity: 50
+                    time: 2025-05-16T15:00:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174400
+                    capacity: 49
+                  - id: 123e4567-e89b-12d3-a456-426614174403
+                    room:
+                      id: 123e4567-e89b-12d3-a456-426614174512
+                      name: Standard Hall
+                      capacity: 120
+                    time: 2025-05-20T15:00:00Z
+                    movieId: 123e4567-e89b-12d3-a456-426614174400
+                    capacity: 110
+          "400":
+            description: Bad Request
+    /api/movie-events/monthly:
+      get:
+        tags:
+        - Movie Events
+        description: List all movie events for a specific month.
+        operationId: FindMovieEventsForMonthController
+        parameters:
+        - name: month
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+        - name: year
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ScheduledMovieEvents'
+                example:
+                  data:
+                  - id: 123e4567-e89b-12d3-a456-426614174500
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: Main Hall
+                      capacity: 150
+                    time: 2025-05-10T19:00:00Z
+                    movie:
+                      id: 123e4567-e89b-12d3-a456-426614174601
+                      title: The Matrix
+                      genre: Action
+                      description: A computer hacker learns about the true nature of reality
+                      year: 1999
+                      duration: 136
+                      actors: "Keanu Reeves, Laurence Fishburne"
+                      ageRating: 16
+                      posterUrl: http://example.com/matrix.jpg
+                    capacity: 90
+                  - id: 123e4567-e89b-12d3-a456-426614174501
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: VIP Theater
+                      capacity: 75
+                    time: 2025-05-11T15:00:00Z
+                    movie:
+                      id: 123e4567-e89b-12d3-a456-426614174603
+                      title: Tenet
+                      genre: Sci-Fi
+                      description: Time-inversion espionage
+                      year: 2020
+                      duration: 150
+                      actors: "John David Washington, Robert Pattinson"
+                      ageRating: 13
+                      posterUrl: http://example.com/tenet.jpg
+                    capacity: 70
+                  - id: 123e4567-e89b-12d3-a456-426614174502
+                    room:
+                      id: f38145ab-9f1e-4778-90f4-b911fb5e15a7
+                      name: Classic Theater
+                      capacity: 100
+                    time: 2025-05-08T15:00:00Z
+                    movie:
+                      id: 123e4567-e89b-12d3-a456-426614174605
+                      title: Back to the Future
+                      genre: Comedy
+                      description: Time travel adventure
+                      year: 1985
+                      duration: 116
+                      actors: "Michael J. Fox, Christopher Lloyd"
+                      ageRating: 10
+                      posterUrl: http://example.com/bttf.jpg
+                    capacity: 95
+          "400":
+            description: Bad Request
+    /api/movie-events/{movieEventId}/bookings:
+      post:
+        tags:
+        - Movie Events
+        description: Book a movie event.
+        operationId: BookMovieEventController
+        parameters:
+        - name: movieEventId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookMovieEventBody'
+              example:
+                standardVisitors: 2
+                discountVisitors: 1
+          required: true
+        responses:
+          "201":
+            description: Created
+            headers:
+              Location:
+                description: The URI of the newly created booking resource.
+                style: simple
+                explode: false
+                schema:
+                  type: string
+                example: /api/movie-events/123e4567-e89b-12d3-a456-426614174500/bookings/123e4567-e89b-12d3-a456-426614174999
+          "400":
+            description: Bad Request
+    /api/movies/{id}:
+      get:
+        tags:
+        - Movies
+        description: Find a movie by ID.
+        operationId: FindMovieByIdController
+        parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Movie'
+                example:
+                  id: 123e4567-e89b-12d3-a456-42661417400c
+                  title: Inception
+                  genre: Sci-Fi
+                  description: A mind-bending thriller about dreams
+                  year: 2010
+                  duration: 148
+                  actors: "Leonardo DiCaprio, Joseph Gordon-Levitt"
+                  ageRating: 13
+                  posterUrl: http://example.com/inception.jpg
+          "400":
+            description: Bad Request
+    /api/movies:
+      get:
+        tags:
+        - Movies
+        description: List movies by Title & Genre.
+        operationId: FindMoviesByFilterController
+        parameters:
+        - name: x-user-role
+          in: header
+          required: false
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: Title
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: Genre
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Movies'
+                example:
+                  data:
+                  - id: 123e4567-e89b-12d3-a456-426614174000
+                    title: The Shawshank Redemption
+                    genre: Drama
+                    description: Placeholder description
+                    year: 1994
+                    duration: 142
+                    actors: Tim Robbins, Morgan Freeman
+                    ageRating: 15
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174001
+                    title: The Godfather
+                    genre: Crime
+                    description: Placeholder description
+                    year: 1972
+                    duration: 175
+                    actors: Marlon Brando, Al Pacino
+                    ageRating: 18
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174002
+                    title: The Dark Knight
+                    genre: Action
+                    description: Placeholder description
+                    year: 2008
+                    duration: 152
+                    actors: Christian Bale, Heath Ledger
+                    ageRating: 13
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174003
+                    title: Pulp Fiction
+                    genre: Crime
+                    description: Placeholder description
+                    year: 1994
+                    duration: 154
+                    actors: John Travolta, Uma Thurman
+                    ageRating: 18
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174004
+                    title: Schindler's List
+                    genre: Biography
+                    description: Placeholder description
+                    year: 1993
+                    duration: 195
+                    actors: Liam Neeson, Ralph Fiennes
+                    ageRating: 15
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174005
+                    title: 'The Lord of the Rings: The Return of the King'
+                    genre: Adventure
+                    description: Placeholder description
+                    year: 2003
+                    duration: 201
+                    actors: Elijah Wood, Viggo Mortensen
+                    ageRating: 13
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174006
+                    title: Fight Club
+                    genre: Drama
+                    description: Placeholder description
+                    year: 1999
+                    duration: 139
+                    actors: Brad Pitt, Edward Norton
+                    ageRating: 18
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174007
+                    title: Forrest Gump
+                    genre: Drama
+                    description: Placeholder description
+                    year: 1994
+                    duration: 142
+                    actors: Tom Hanks, Robin Wright
+                    ageRating: 13
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174008
+                    title: Inception
+                    genre: Sci-Fi
+                    description: Placeholder description
+                    year: 2010
+                    duration: 148
+                    actors: Leonardo DiCaprio, Joseph Gordon-Levitt
+                    ageRating: 13
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 123e4567-e89b-12d3-a456-426614174009
+                    title: The Matrix
+                    genre: Sci-Fi
+                    description: Placeholder description
+                    year: 1999
+                    duration: 136
+                    actors: Keanu Reeves, Laurence Fishburne
+                    ageRating: 15
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 549df119-7197-435d-9d29-ca368d5190d9
+                    title: Goodfellas
+                    genre: Crime
+                    description: Placeholder description
+                    year: 1990
+                    duration: 146
+                    actors: Robert De Niro, Ray Liotta
+                    ageRating: 18
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 7bf71a59-b589-47f6-871c-ec557802a035
+                    title: The Empire Strikes Back
+                    genre: Adventure
+                    description: Placeholder description
+                    year: 1980
+                    duration: 124
+                    actors: Mark Hamill, Harrison Ford
+                    ageRating: 10
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 7b58e122-4ee9-4f9c-a632-79c8685a59e8
+                    title: The Silence of the Lambs
+                    genre: Thriller
+                    description: Placeholder description
+                    year: 1991
+                    duration: 118
+                    actors: Jodie Foster, Anthony Hopkins
+                    ageRating: 18
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 072f7986-8156-4d16-aa8d-bd005bc115f4
+                    title: Saving Private Ryan
+                    genre: War
+                    description: Placeholder description
+                    year: 1998
+                    duration: 169
+                    actors: Tom Hanks, Matt Damon
+                    ageRating: 18
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 5371c6f3-d0ec-45f5-8702-0933398091f7
+                    title: Interstellar
+                    genre: Sci-Fi
+                    description: Placeholder description
+                    year: 2014
+                    duration: 169
+                    actors: Matthew McConaughey, Anne Hathaway
+                    ageRating: 13
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: e2b6ed20-09d6-4e44-b09c-cf4912a6c3e3
+                    title: Parasite
+                    genre: Thriller
+                    description: Placeholder description
+                    year: 2019
+                    duration: 132
+                    actors: Song Kang-ho, Lee Sun-kyun
+                    ageRating: 16
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 6ca29042-cdb1-40b7-bcf0-be833dfda352
+                    title: Gladiator
+                    genre: Action
+                    description: Placeholder description
+                    year: 2000
+                    duration: 155
+                    actors: Russell Crowe, Joaquin Phoenix
+                    ageRating: 18
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 513e9685-17ba-4c7d-b7bd-06bc22fda3d3
+                    title: The Green Mile
+                    genre: Drama
+                    description: Placeholder description
+                    year: 1999
+                    duration: 189
+                    actors: Tom Hanks, Michael Clarke Duncan
+                    ageRating: 15
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 623bca65-9ff7-498e-aa7f-77bd4ca054af
+                    title: Braveheart
+                    genre: Biography
+                    description: Placeholder description
+                    year: 1995
+                    duration: 178
+                    actors: Mel Gibson, Sophie Marceau
+                    ageRating: 15
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 020f498b-b4dd-4c80-896f-7eb9c7e5460c
+                    title: The Lion King
+                    genre: Animation
+                    description: Placeholder description
+                    year: 1994
+                    duration: 88
+                    actors: Matthew Broderick, James Earl Jones
+                    ageRating: 6
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: d0878a5e-04c8-45d2-88ce-91c29407d8c1
+                    title: The Departed
+                    genre: Crime
+                    description: Placeholder description
+                    year: 2006
+                    duration: 151
+                    actors: Leonardo DiCaprio, Matt Damon
+                    ageRating: 18
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: 7a0578fd-5895-413b-8e05-e53e3ab2c52c
+                    title: Whiplash
+                    genre: Drama
+                    description: Placeholder description
+                    year: 2014
+                    duration: 106
+                    actors: Miles Teller, J.K. Simmons
+                    ageRating: 15
+                    posterUrl: http://example.com/movie-placeholder.jpg
+                  - id: b53c804e-3bd3-4b4b-a624-d90c1f02d2b8
+                    title: The Prestige
+                    genre: Drama
+                    description: Placeholder description
+                    year: 2006
+                    duration: 130
+                    actors: Hugh Jackman, Christian Bale
+                    ageRating: 13
+                    posterUrl: http://example.com/movie-placeholder.jpg
+
+          "400":
+            description: Bad Request
+      post:
+        tags:
+        - Movies
+        description: Register a new movie.
+        operationId: RegisterMovieController
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterMovieBody'
+              example:
+                title: Inception
+                description: A mind-bending thriller about dreams
+                year: 2010
+                duration: 148
+                genre: Sci-Fi
+                actors: "Leonardo DiCaprio, Joseph Gordon-Levitt"
+                ageRating: 13
+                posterUrl: http://example.com/inception.jpg
+          required: true
+        responses:
+          "201":
+            description: Created
+            headers:
+              Location:
+                description: The URI of the newly created movie.
+                style: simple
+                explode: false
+                schema:
+                  type: string
+                example: /api/movies/123e4567-e89b-12d3-a456-426614174004
+          "400":
+            description: Bad Request
+  components:
+    schemas:
+      BookMovieEventBody:
+        type: object
+        properties:
+          standardVisitors:
+            maximum: 2
+            minimum: 0
+            type: integer
+            format: int32
+          discountVisitors:
+            maximum: 2
+            minimum: 0
+            type: integer
+            format: int32
+        additionalProperties: false
+      ExtendedMovieEvent:
+        required:
+        - id
+        - movie
+        - room
+        - time
+        type: object
+        properties:
+          id:
+            type: string
+            nullable: true
+          room:
+            $ref: '#/components/schemas/Room'
+          time:
+            type: string
+            format: date-time
+          movie:
+            $ref: '#/components/schemas/Movie'
+          capacity:
+            type: integer
+            format: int32
+            nullable: true
+        additionalProperties: false
+      Movie:
+        required:
+        - actors
+        - description
+        - genre
+        - id
+        - posterUrl
+        - title
+        type: object
+        properties:
+          id:
+            type: string
+            nullable: true
+          title:
+            type: string
+            nullable: true
+          genre:
+            type: string
+            nullable: true
+          description:
+            type: string
+            nullable: true
+          year:
+            type: integer
+            format: int32
+          duration:
+            type: integer
+            format: int32
+          actors:
+            type: string
+            nullable: true
+          ageRating:
+            type: integer
+            format: int32
+          posterUrl:
+            type: string
+            nullable: true
+        additionalProperties: false
+      MovieEvent:
+        required:
+        - id
+        - movieId
+        - room
+        - time
+        type: object
+        properties:
+          id:
+            type: string
+            nullable: true
+          room:
+            $ref: '#/components/schemas/Room'
+          time:
+            type: string
+            format: date-time
+          movieId:
+            type: string
+            nullable: true
+          capacity:
+            type: integer
+            format: int32
+            nullable: true
+        additionalProperties: false
+      MovieWithEvents:
+        required:
+        - actors
+        - description
+        - genre
+        - id
+        - posterUrl
+        - title
+        type: object
+        properties:
+          id:
+            type: string
+            nullable: true
+          title:
+            type: string
+            nullable: true
+          genre:
+            type: string
+            nullable: true
+          description:
+            type: string
+            nullable: true
+          year:
+            type: integer
+            format: int32
+          duration:
+            type: integer
+            format: int32
+          actors:
+            type: string
+            nullable: true
+          ageRating:
+            type: integer
+            format: int32
+          posterUrl:
+            type: string
+            nullable: true
+          events:
+            type: array
+            nullable: true
+            items:
+              $ref: '#/components/schemas/MovieEvent'
+        additionalProperties: false
+      Movies:
+        type: object
+        properties:
+          data:
+            type: array
+            nullable: true
+            items:
+              $ref: '#/components/schemas/Movie'
+        additionalProperties: false
+      MoviesWithEvents:
+        type: object
+        properties:
+          data:
+            type: array
+            nullable: true
+            items:
+              $ref: '#/components/schemas/MovieWithEvents'
+        additionalProperties: false
+        
+      RegisterMovieBody:
+        required:
+        - actors
+        - ageRating
+        - description
+        - duration
+        - genre
+        - posterUrl
+        - title
+        - year
+        type: object
+        properties:
+          title:
+            maxLength: 250
+            minLength: 1
+            type: string
+          description:
+            maxLength: 500
+            minLength: 1
+            type: string
+          year:
+            maximum: 2050
+            minimum: 1900
+            type: integer
+            format: int32
+          duration:
+            maximum: 300
+            minimum: 1
+            type: integer
+            format: int32
+          genre:
+            maxLength: 250
+            minLength: 1
+            type: string
+          actors:
+            maxLength: 250
+            minLength: 1
+            type: string
+          ageRating:
+            maximum: 18
+            minimum: 0
+            type: integer
+            format: int32
+          posterUrl:
+            maxLength: 250
+            minLength: 1
+            type: string
+        additionalProperties: false
+      Room:
+        required:
+        - id
+        - name
+        type: object
+        properties:
+          id:
+            type: string
+            nullable: true
+          name:
+            type: string
+            nullable: true
+          capacity:
+            type: integer
+            format: int32
+        additionalProperties: false
+      ScheduleMovieEventBody:
+        required:
+        - movieId
+        - roomId
+        - startDate
+        type: object
+        properties:
+          movieId:
+            type: string
+            format: uuid
+          roomId:
+            type: string
+            format: uuid
+          startDate:
+            type: string
+            format: date-time
+        additionalProperties: false
+      ScheduledMovieEvents:
+        type: object
+        properties:
+          data:
+            type: array
+            nullable: true
+            items:
+              $ref: '#/components/schemas/ExtendedMovieEvent'
+        additionalProperties: false
