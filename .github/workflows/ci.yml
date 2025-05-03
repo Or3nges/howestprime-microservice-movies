@@ -37,11 +37,8 @@ jobs:
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Generate coverage report
-        run: |
-          reportgenerator \
-            -reports:./TestResults/**/coverage.cobertura.xml \
-            -targetdir:./TestResults/coverage-report \
-            -reporttypes:Html;Cobertura
+        id: coverage_report
+        run: reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Html
 
       - name: Check coverage threshold
         run: |
