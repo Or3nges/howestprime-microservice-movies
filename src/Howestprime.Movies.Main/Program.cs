@@ -12,14 +12,14 @@ Otherwise, the app will not start.
 **/
 builder
     .Services
-    //    .AddPersistenceModule(configuration)
-        .AddWebApiModule(configuration)
+    .AddPersistenceModule(configuration)
+    .AddWebApiModule(configuration)
     //    .AddMessagingModule(configuration)
-        .AddUseCases();
+    .AddUseCases();
 
 var app = builder
     .Build()
- //   .UsePersistenceModule()
+    .UsePersistenceModule()
     .UseWebApiModule();
 
 // await app.RunMessagingModule();

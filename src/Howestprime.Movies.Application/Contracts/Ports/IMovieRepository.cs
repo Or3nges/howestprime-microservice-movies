@@ -8,5 +8,6 @@ namespace Howestprime.Movies.Application.Contracts.Ports
     {
         Task<Howestprime.Movies.Domain.Entities.Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<Howestprime.Movies.Domain.Entities.Movie> AddAsync(Howestprime.Movies.Domain.Entities.Movie movie, CancellationToken cancellationToken = default);
+        Task<IEnumerable<Howestprime.Movies.Domain.Entities.Movie>> FindByFiltersAsync(string? title, string? genre, CancellationToken cancellationToken = default);
     }
 }
