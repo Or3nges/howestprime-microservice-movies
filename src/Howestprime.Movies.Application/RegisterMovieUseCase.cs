@@ -1,6 +1,7 @@
 using Howestprime.Movies.Application.Contracts.Data;
 using Howestprime.Movies.Application.Contracts.Ports;
-using Howestprime.Movies.Domain.Shared;
+using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Application.Movies.RegisterMovie;
 
 namespace Howestprime.Movies.Application
 {
@@ -23,12 +24,12 @@ namespace Howestprime.Movies.Application
             var movie = new Movie(
                 Guid.NewGuid(),
                 command.Title,
-                command.Description,
-                command.Genres,
-                command.Actors,
-                command.AgeRating,
+                command.Description ?? string.Empty,
+                command.Genre ?? string.Empty,
+                command.Actors ?? string.Empty,
+                command.AgeRating.ToString(),
                 command.Duration,
-                command.PosterUrl
+                command.PosterUrl ?? string.Empty
             );
 
             return await _movieRepository.AddAsync(movie);

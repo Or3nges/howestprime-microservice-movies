@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Howestprime.Movies.Domain\Howestprime.Movies.Domain.csproj" />
     <ProjectReference Include="..\..\src\Howestprime.Movies.Application\Howestprime.Movies.Application.csproj" />
+    <ProjectReference Include="..\..\src\Howestprime.Movies.Infrastructure\Howestprime.Movies.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
