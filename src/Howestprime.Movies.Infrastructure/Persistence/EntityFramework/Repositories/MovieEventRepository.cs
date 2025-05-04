@@ -28,6 +28,13 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<MovieEvent>> GetEventsInRangeAsync(DateTime start, DateTime end)
+        {
+            return await _context.MovieEvents
+                .Where(e => e.Date >= start && e.Date <= end)
+                .ToListAsync();
+        }
+
         public async Task AddAsync(MovieEvent movieEvent)
         {
             _context.MovieEvents.Add(movieEvent);
