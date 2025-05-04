@@ -211,7 +211,7 @@
       get:
         tags:
         - Movie Events
-        description: List all movie events for a specific movie.
+        description: Get a movie and its scheduled events in the next 14 days.
         operationId: FindMovieByIdWithEventsController
         parameters:
         - name: movieId
@@ -273,6 +273,8 @@
                     capacity: 110
           "400":
             description: Bad Request
+          "404":
+            description: Movie not found or no events in the next 14 days
     /api/movie-events/monthly:
       get:
         tags:

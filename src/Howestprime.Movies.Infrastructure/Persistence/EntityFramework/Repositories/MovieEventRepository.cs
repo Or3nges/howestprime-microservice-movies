@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Entities;
@@ -17,6 +19,13 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
         public async Task<MovieEvent?> GetByRoomDateTimeAsync(Guid roomId, DateTime date, TimeSpan time)
         {
             return await _context.MovieEvents.FirstOrDefaultAsync(e => e.RoomId == roomId && e.Date == date && e.Time == time);
+        }
+
+        public async Task<IEnumerable<MovieEvent>> GetEventsForMovieInRangeAsync(Guid movieId, DateTime start, DateTime end)
+        {
+            return await _context.MovieEvents
+                .Where(e => e.MovieId == movieId && e.Date >= start && e.Date <= end)
+                .ToListAsync();
         }
 
         public async Task AddAsync(MovieEvent movieEvent)
