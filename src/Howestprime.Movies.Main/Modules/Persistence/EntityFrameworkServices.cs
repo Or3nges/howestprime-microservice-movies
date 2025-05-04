@@ -2,6 +2,9 @@ using Domaincrafters.Application;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Configurations;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using Howestprime.Movies.Infrastructure.Persistence.EntityFramework;
+using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Repositories;
+using Howestprime.Movies.Application.Contracts.Ports;
 
 namespace Howestprime.Movies.Main.Modules.Persistence;
 
@@ -36,7 +39,7 @@ public static class EntityFrameworkServices
             default:
                 throw new NotSupportedException($"Database provider '{databaseProvider}' is not supported.");
         }
-
+        
         return services;
     }
 
@@ -44,6 +47,9 @@ public static class EntityFrameworkServices
         this IServiceCollection services
     )
     {
+        services.AddScoped<IMovieRepository, MovieRepository>();
+        services.AddScoped<IMovieEventRepository, MovieEventRepository>();
+        services.AddScoped<IRoomRepository, RoomRepository>();
         return services;
     }
 

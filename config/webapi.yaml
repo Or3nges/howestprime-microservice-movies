@@ -161,25 +161,52 @@
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ScheduleMovieEventBody'
+                type: object
+                properties:
+                  movieId:
+                    type: string
+                    format: uuid
+                  roomId:
+                    type: string
+                    format: uuid
+                  date:
+                    type: string
+                    format: date
+                  time:
+                    type: string
+                    example: "15:00:00"
+                  capacity:
+                    type: integer
+                    minimum: 1
               example:
                 movieId: 123e4567-e89b-12d3-a456-426614174000
                 roomId: 123e4567-e89b-12d3-a456-426614174001
-                startDate: 2025-05-10T19:30:00Z
+                date: 2025-05-10
+                time: "15:00:00"
+                capacity: 100
           required: true
         responses:
           "201":
             description: Created
-            headers:
-              Location:
-                description: The URI of the newly created movie event.
-                style: simple
-                explode: false
+            content:
+              application/json:
                 schema:
-                  type: string
-                example: /api/movie-events/123e4567-e89b-12d3-a456-426614174003
+                  type: object
+                  properties:
+                    eventId:
+                      type: string
+                      format: uuid
+                example:
+                  eventId: 123e4567-e89b-12d3-a456-426614174003
           "400":
             description: Bad Request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error:
+                      type: string
     /api/movie-events/movie:
       get:
         tags:

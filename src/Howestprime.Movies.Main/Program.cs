@@ -23,4 +23,11 @@ var app = builder
     .UseWebApiModule();
 
 // await app.RunMessagingModule();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roomRepo = scope.ServiceProvider.GetRequiredService<Howestprime.Movies.Application.Contracts.Ports.IRoomRepository>();
+    await roomRepo.SeedRoomsAsync();
+}
+
 await app.RunAsync();

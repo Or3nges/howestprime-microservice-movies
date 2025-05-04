@@ -8,6 +8,8 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
         public MoviesDbContext(DbContextOptions<MoviesDbContext> options) : base(options) { }
 
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<MovieEvent> MovieEvents { get; set; }
+        public DbSet<Room> Rooms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +23,21 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
                 entity.Property(m => m.AgeRating);
                 entity.Property(m => m.Duration);
                 entity.Property(m => m.PosterUrl);
+            });
+            modelBuilder.Entity<MovieEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.MovieId).IsRequired();
+                entity.Property(e => e.RoomId).IsRequired();
+                entity.Property(e => e.Date).IsRequired();
+                entity.Property(e => e.Time).IsRequired();
+                entity.Property(e => e.Capacity).IsRequired();
+            });
+            modelBuilder.Entity<Room>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.Name).IsRequired();
+                entity.Property(r => r.Capacity).IsRequired();
             });
         }
     }

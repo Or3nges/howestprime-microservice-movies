@@ -1,10 +1,9 @@
 using System;
 
-namespace Howestprime.Movies.Domain.Entities
+namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent
 {
-    public class MovieEvent
+    public class ScheduleMovieEventCommand
     {
-        public Guid Id { get; set; }
         public Guid MovieId { get; set; }
         public Guid RoomId { get; set; }
         public DateTime Date { get; set; }
