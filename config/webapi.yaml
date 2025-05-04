@@ -400,6 +400,8 @@
                   posterUrl: http://example.com/inception.jpg
           "400":
             description: Bad Request
+          "404":
+            description: Movie not found
     /api/movies:
       get:
         tags:
