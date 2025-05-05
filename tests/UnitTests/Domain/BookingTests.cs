@@ -36,5 +36,15 @@ namespace UnitTests.Domain
             Assert.Equal(roomName, booking.RoomName);
             Assert.Equal(createdAt, booking.CreatedAt);
         }
+
+        [Fact]
+        public void Booking_StatusAndPaymentStatus_CanBeSet()
+        {
+            var booking = new Booking();
+            booking.Status = Howestprime.Movies.Domain.Enums.BookingStatus.Closed;
+            booking.PaymentStatus = Howestprime.Movies.Domain.Enums.PaymentStatus.Success;
+            Assert.Equal(Howestprime.Movies.Domain.Enums.BookingStatus.Closed, booking.Status);
+            Assert.Equal(Howestprime.Movies.Domain.Enums.PaymentStatus.Success, booking.PaymentStatus);
+        }
     }
 }
