@@ -50,5 +50,17 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<MovieEvent> GetByIdWithBookingsAsync(Guid movieEventId)
+        {
+            return await _context.MovieEvents
+                .Include(e => e.Bookings)
+                .FirstOrDefaultAsync(e => e.Id == movieEventId);
+        }
+
+        public async Task UpdateAsync(MovieEvent movieEvent)
+        {
+            await Task.CompletedTask;
+        }
     }
 }

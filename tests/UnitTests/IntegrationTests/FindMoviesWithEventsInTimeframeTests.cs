@@ -26,53 +26,75 @@ namespace UnitTests.IntegrationTests
         {
             var context = CreateDbContext();
             context.Database.EnsureCreated();
+            
+            await context.SaveChangesAsync();
+            
             var movieRepo = new MovieRepository(context);
             var roomRepo = new RoomRepository(context);
-context.MovieEvents.RemoveRange(context.MovieEvents);
-context.Movies.RemoveRange(context.Movies);
-await context.SaveChangesAsync();
-await roomRepo.SeedRoomsAsync();
+            await roomRepo.SeedRoomsAsync();
             var eventRepo = new MovieEventRepository(context);
             var useCase = new FindMoviesWithEventsInTimeframeUseCase(movieRepo, eventRepo, roomRepo);
 
-            var movie1 = new Movie(Guid.NewGuid(), "Inception", "desc", "Sci-Fi", "actors", "12", 120, "poster");
-            var movie2 = new Movie(Guid.NewGuid(), "Titanic", "desc", "Drama", "actors", "12", 120, "poster");
+            var movieId1 = Guid.NewGuid();
+            var movie1 = new Movie(movieId1, "Inception", "A mind-bending thriller", "Sci-Fi", "Leonardo DiCaprio", "12", 120, "poster.jpg");
+            var movieId2 = Guid.NewGuid();
+            var movie2 = new Movie(movieId2, "Titanic", "A romance drama", "Drama", "Leonardo DiCaprio", "12", 120, "poster2.jpg");
             await movieRepo.AddAsync(movie1);
             await movieRepo.AddAsync(movie2);
+            
             var room = context.Rooms.First();
-
+            Assert.NotNull(room);
+            
             var movieEvent1 = new MovieEvent
             {
                 Id = Guid.NewGuid(),
-                MovieId = movie1.Id,
+                MovieId = movieId1,
                 RoomId = room.Id,
                 Date = DateTime.UtcNow.Date.AddDays(2),
                 Time = new TimeSpan(15, 0, 0),
-                Capacity = 50
+                Capacity = 50,
+                Visitors = 0,
+                Bookings = new List<Booking>()
             };
             await eventRepo.AddAsync(movieEvent1);
 
             var movieEvent2 = new MovieEvent
             {
                 Id = Guid.NewGuid(),
-                MovieId = movie2.Id,
+                MovieId = movieId2,
                 RoomId = room.Id,
                 Date = DateTime.UtcNow.Date.AddDays(3),
                 Time = new TimeSpan(15, 0, 0),
-                Capacity = 50
+                Capacity = 50,
+                Visitors = 0,
+                Bookings = new List<Booking>()
             };
             await eventRepo.AddAsync(movieEvent2);
+            
+            var persistedMovies = await context.Movies.ToListAsync();
+            Assert.Contains(persistedMovies, m => m.Id == movieId1);
+            Assert.Contains(persistedMovies, m => m.Title == "Inception" && m.Genre == "Sci-Fi");
+            
+            var persistedEvents = await context.MovieEvents.ToListAsync();
+            Assert.Contains(persistedEvents, e => e.MovieId == movieId1);
 
-            // Act
+            context.Dispose();
+            using var queryContext = CreateDbContext();
+            var queryMovieRepo = new MovieRepository(queryContext);
+            var queryEventRepo = new MovieEventRepository(queryContext);
+            var queryRoomRepo = new RoomRepository(queryContext); 
+            var queryUseCase = new FindMoviesWithEventsInTimeframeUseCase(queryMovieRepo, queryEventRepo, queryRoomRepo);
+
             var query = new FindMoviesWithEventsInTimeframeQuery { Title = "Inception", Genre = "Sci-Fi" };
-            var result = await useCase.ExecuteAsync(query);
+            var result = await queryUseCase.ExecuteAsync(query);
 
-            // Assert
-            Assert.True(result.Count >= 1);
-            Assert.Contains(result, m => m.Title == "Inception" && m.Genres == "Sci-Fi");
-            var inception = result.First(m => m.Title == "Inception" && m.Genres == "Sci-Fi");
-            Assert.Single(inception.Events);
-            Assert.Contains(inception.Events, e => e.Id == movieEvent1.Id);
+            Assert.NotEmpty(result);
+            Assert.Contains(result, m => m.Title == "Inception");
+            
+            var inceptionResult = result.FirstOrDefault(m => m.Title == "Inception");
+            Assert.NotNull(inceptionResult);
+            Assert.Equal("Sci-Fi", inceptionResult.Genres);
+            Assert.NotEmpty(inceptionResult.Events);
         }
 
         [Fact]

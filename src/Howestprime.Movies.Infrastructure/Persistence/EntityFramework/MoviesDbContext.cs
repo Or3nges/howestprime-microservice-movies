@@ -10,6 +10,7 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
         public DbSet<Movie> Movies { get; set; }
         public DbSet<MovieEvent> MovieEvents { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +33,10 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
                 entity.Property(e => e.Date).IsRequired();
                 entity.Property(e => e.Time).IsRequired();
                 entity.Property(e => e.Capacity).IsRequired();
+                entity.Property(e => e.Visitors).IsRequired();
+                entity.HasMany(e => e.Bookings)
+                      .WithOne()
+                      .OnDelete(DeleteBehavior.Cascade);
             });
             modelBuilder.Entity<Room>(entity =>
             {
@@ -39,6 +44,7 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
                 entity.Property(r => r.Name).IsRequired();
                 entity.Property(r => r.Capacity).IsRequired();
             });
+            modelBuilder.ApplyConfiguration(new BookingConfiguration());
         }
     }
 }

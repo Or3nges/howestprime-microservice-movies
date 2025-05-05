@@ -19,7 +19,7 @@ public static class EntityFrameworkServices
             .AddDbContext(configuration)
             .AddRepositories()
             .AddQueries()
-            .AddScoped<IUnitOfWork, EntityFrameworkUoW>();
+            .AddScoped<Howestprime.Movies.Application.Contracts.Ports.IUnitOfWork, EntityFrameworkUoW>();
 
         return services;
     }
