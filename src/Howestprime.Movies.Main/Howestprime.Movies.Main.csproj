@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Howestprime.Movies.Infrastructure\Howestprime.Movies.Infrastructure.csproj" />
+    <ProjectReference Include="..\Howestprime.Movies.Application\Howestprime.Movies.Application.csproj" />
   </ItemGroup>
 
 </Project>

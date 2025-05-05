@@ -1,38 +1,27 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
+
 using Howestprime.Movies.Application;
-using Howestprime.Movies.Application.DTO;
 using Howestprime.Movies.Application.Movies.RegisterMovie;
+using Howestprime.Movies.Application.DTO;
+using Microsoft.AspNetCore.Http;
 
-namespace Howestprime.Movies.Infrastructure.WebApi.Controllers
+public static class RegisterMovieController
 {
-    [ApiController]
-    [Route("api/movies")]
-    public class RegisterMovieController : ControllerBase
+    public static async Task<IResult> Invoke(
+        RegisterMovieRequest request,
+        RegisterMovieUseCase useCase)
     {
-        private readonly RegisterMovieUseCase _registerMovieUseCase;
-
-        public RegisterMovieController(RegisterMovieUseCase registerMovieUseCase)
+        var command = new RegisterMovieCommand
         {
-            _registerMovieUseCase = registerMovieUseCase;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterMovieRequest request)
-        {
-            var command = new RegisterMovieCommand
-            {
-                Title = request.Title!,
-                Description = request.Description,
-                Genre = request.Genre,
-                Actors = request.Actors,
-                AgeRating = request.AgeRating,
-                Duration = request.Duration,
-                PosterUrl = request.PosterUrl
-            };
-
-            var movie = await _registerMovieUseCase.ExecuteAsync(command);
-            return Ok(movie);
-        }
+            Title = request.Title!,
+            Description = request.Description,
+            Genre = request.Genre,
+            Actors = request.Actors,
+            AgeRating = request.AgeRating,
+            Duration = request.Duration,
+            PosterUrl = request.PosterUrl
+        };
+        var movie = await useCase.ExecuteAsync(command);
+        return Results.Ok(movie);
     }
 }

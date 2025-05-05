@@ -1,32 +1,15 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
+
 using Howestprime.Movies.Application.Movies.ScheduleMovieEvent;
+using Microsoft.AspNetCore.Http;
 
-namespace Howestprime.Movies.Infrastructure.WebApi.Controllers
+public static class ScheduleMovieEventController
 {
-    [ApiController]
-    [Route("api/movie-events")]
-    public class ScheduleMovieEventController : ControllerBase
+    public static async Task<IResult> Invoke(
+        ScheduleMovieEventCommand command,
+        ScheduleMovieEventUseCase useCase)
     {
-        private readonly ScheduleMovieEventUseCase _useCase;
-        public ScheduleMovieEventController(ScheduleMovieEventUseCase useCase)
-        {
-            _useCase = useCase;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Schedule([FromBody] ScheduleMovieEventCommand command)
-        {
-            try
-            {
-                var result = await _useCase.ExecuteAsync(command);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = ex.Message });
-            }
-        }
+        var result = await useCase.ExecuteAsync(command);
+        return Results.Ok(result);
     }
 }

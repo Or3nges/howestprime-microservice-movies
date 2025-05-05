@@ -1,34 +1,16 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
+
 using Howestprime.Movies.Application.Movies.FindMovieById;
-using Howestprime.Movies.Domain.Shared;
+using Microsoft.AspNetCore.Http;
 
-namespace Howestprime.Movies.Infrastructure.WebApi.Controllers
+public static class FindMovieByIdController
 {
-    [ApiController]
-    [Route("api/movies")]
-    public class FindMovieByIdController : ControllerBase
+    public static async Task<IResult> Invoke(
+        Guid id,
+        FindMovieByIdUseCase useCase)
     {
-        private readonly FindMovieByIdUseCase _useCase;
-        public FindMovieByIdController(FindMovieByIdUseCase useCase)
-        {
-            _useCase = useCase;
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
-        {
-            try
-            {
-                var query = new MovieByIdQuery { Id = id };
-                MovieData movie = await _useCase.ExecuteAsync(query);
-                return Ok(movie);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
-        }
+        var query = new MovieByIdQuery { Id = id };
+        var movie = await useCase.ExecuteAsync(query);
+        return movie != null ? Results.Ok(movie) : Results.NotFound();
     }
 }

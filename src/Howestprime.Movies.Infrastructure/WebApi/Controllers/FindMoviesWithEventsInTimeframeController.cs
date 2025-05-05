@@ -1,25 +1,15 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
+
 using Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe;
+using Microsoft.AspNetCore.Http;
 
-namespace Howestprime.Movies.Infrastructure.WebApi.Controllers
+public static class FindMoviesWithEventsInTimeframeController
 {
-    [ApiController]
-    [Route("api/movie-events")]
-    public class FindMoviesWithEventsInTimeframeController : ControllerBase
+    public static async Task<IResult> Invoke(
+        [AsParameters] FindMoviesWithEventsInTimeframeQuery query,
+        FindMoviesWithEventsInTimeframeUseCase useCase)
     {
-        private readonly FindMoviesWithEventsInTimeframeUseCase _useCase;
-        public FindMoviesWithEventsInTimeframeController(FindMoviesWithEventsInTimeframeUseCase useCase)
-        {
-            _useCase = useCase;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string? Title, [FromQuery] string? Genre)
-        {
-            var query = new FindMoviesWithEventsInTimeframeQuery { Title = Title, Genre = Genre };
-            var result = await _useCase.ExecuteAsync(query);
-            return Ok(result);
-        }
+        var result = await useCase.ExecuteAsync(query);
+        return Results.Ok(result);
     }
 }

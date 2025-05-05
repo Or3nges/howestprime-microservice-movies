@@ -1,25 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Howestprime.Movies.Application.Movies.BookMovieEvent;
+using Microsoft.AspNetCore.Http;
 
-namespace Howestprime.Movies.Infrastructure.WebApi.Controllers
+namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
+
+public static class BookMovieEventController
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BookMovieEventController : ControllerBase
+    public static async Task<IResult> Invoke(
+        BookMovieEventCommand command,
+        BookMovieEventHandler handler)
     {
-        private readonly BookMovieEventHandler _handler;
-
-        public BookMovieEventController(BookMovieEventHandler handler)
-        {
-            _handler = handler;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Book([FromBody] BookMovieEventCommand command)
-        {
-            var result = await _handler.HandleAsync(command);
-            return Ok(result);
-        }
+        var result = await handler.HandleAsync(command);
+        return Results.Ok(result);
     }
 }

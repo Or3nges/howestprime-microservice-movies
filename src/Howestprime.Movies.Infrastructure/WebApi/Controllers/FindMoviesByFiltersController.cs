@@ -1,26 +1,15 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
+
 using Howestprime.Movies.Application.Movies.FindMoviesByFilters;
+using Microsoft.AspNetCore.Http;
 
-namespace Howestprime.Movies.Infrastructure.WebApi.Controllers
+public static class FindMoviesByFiltersController
 {
-    [ApiController]
-    [Route("api/movies/search")]
-    public class FindMoviesByFiltersController : ControllerBase
+    public static async Task<IResult> Invoke(
+        [AsParameters] FindMoviesByFiltersQuery query,
+        FindMoviesByFiltersUseCase useCase)
     {
-        private readonly FindMoviesByFiltersUseCase _useCase;
-
-        public FindMoviesByFiltersController(FindMoviesByFiltersUseCase useCase)
-        {
-            _useCase = useCase;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string? title, [FromQuery] string? genre)
-        {
-            var query = new FindMoviesByFiltersQuery { Title = title, Genre = genre };
-            var movies = await _useCase.ExecuteAsync(query);
-            return Ok(movies);
-        }
+        var movies = await useCase.ExecuteAsync(query);
+        return Results.Ok(movies);
     }
 }

@@ -14,7 +14,7 @@ builder
     .Services
     .AddPersistenceModule(configuration)
     .AddWebApiModule(configuration)
-    //    .AddMessagingModule(configuration)
+    .AddMessagingModule(configuration)
     .AddUseCases();
 
 var app = builder
@@ -22,12 +22,9 @@ var app = builder
     .UsePersistenceModule()
     .UseWebApiModule();
 
-// await app.RunMessagingModule();
+await app.RunMessagingModule();
 
 using (var scope = app.Services.CreateScope())
-{
-    var roomRepo = scope.ServiceProvider.GetRequiredService<Howestprime.Movies.Application.Contracts.Ports.IRoomRepository>();
-    await roomRepo.SeedRoomsAsync();
-}
+
 
 await app.RunAsync();

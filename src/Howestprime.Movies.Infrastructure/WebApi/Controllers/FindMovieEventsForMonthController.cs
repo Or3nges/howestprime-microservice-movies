@@ -1,25 +1,15 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Howestprime.Movies.Application.Movies.FindMovieEventsForMonth;
+using Microsoft.AspNetCore.Http;
 
-namespace Howestprime.Movies.Infrastructure.WebApi.Controllers
+namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
+
+public static class FindMovieEventsForMonthController
 {
-    [ApiController]
-    [Route("api/movie-events/monthly")]
-    public class FindMovieEventsForMonthController : ControllerBase
+    public static async Task<IResult> Invoke(
+        [AsParameters] FindMovieEventsForMonthQuery query,
+        FindMovieEventsForMonthUseCase useCase)
     {
-        private readonly FindMovieEventsForMonthUseCase _useCase;
-        public FindMovieEventsForMonthController(FindMovieEventsForMonthUseCase useCase)
-        {
-            _useCase = useCase;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] int year, [FromQuery] int month)
-        {
-            var query = new FindMovieEventsForMonthQuery { Year = year, Month = month };
-            var result = await _useCase.ExecuteAsync(query);
-            return Ok(result);
-        }
+        var result = await useCase.ExecuteAsync(query);
+        return Results.Ok(result);
     }
 }

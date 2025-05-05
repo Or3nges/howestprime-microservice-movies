@@ -30,11 +30,23 @@ public static class EntityFrameworkServices
     )
     {
         string databaseProvider = configuration.GetValue<string>("Database:Provider")!;
+        string connectionString = configuration.GetValue<string>("Database:ConnectionString")!;
+        
         switch (databaseProvider)
         {
             case "PostgreSQL":
                 services.AddDbContext<DomainContextBase, DomainContextPostgres>();
                 services.AddDbContext<QueryContextBase, QueryContextPostgres>();
+                
+                // Register MoviesDbContext with the connection string
+                services.AddDbContext<MoviesDbContext>(options =>
+                {
+                    options.UseNpgsql(connectionString);
+                });
+                
+                // Register DbContext for EntityFrameworkUoW
+                services.AddScoped<DbContext>(provider => provider.GetRequiredService<MoviesDbContext>());
+                
                 break;
             default:
                 throw new NotSupportedException($"Database provider '{databaseProvider}' is not supported.");
