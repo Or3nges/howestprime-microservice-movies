@@ -46,5 +46,41 @@ namespace UnitTests.Domain
             Assert.Equal(Howestprime.Movies.Domain.Enums.BookingStatus.Closed, booking.Status);
             Assert.Equal(Howestprime.Movies.Domain.Enums.PaymentStatus.Success, booking.PaymentStatus);
         }
+
+        [Fact]
+        public void Booking_Status_Transitions()
+        {
+            var booking = new Booking();
+            booking.Status = BookingStatus.Open;
+            Assert.Equal(BookingStatus.Open, booking.Status);
+            booking.Status = BookingStatus.Closed;
+            Assert.Equal(BookingStatus.Closed, booking.Status);
+        }
+
+        [Fact]
+        public void Booking_NegativeVisitors_AllowedByDefault()
+        {
+            var booking = new Booking
+            {
+                StandardVisitors = -1,
+                DiscountVisitors = -2
+            };
+            Assert.Equal(-1, booking.StandardVisitors);
+            Assert.Equal(-2, booking.DiscountVisitors);
+        }
+
+        [Fact]
+        public void Booking_DefaultValues_AreCorrect()
+        {
+            var booking = new Booking();
+            Assert.Equal(Guid.Empty, booking.Id);
+            Assert.Equal(0, booking.StandardVisitors);
+            Assert.Equal(0, booking.DiscountVisitors);
+            Assert.Equal(BookingStatus.Open, booking.Status);
+            Assert.Equal(PaymentStatus.Pending, booking.PaymentStatus);
+            Assert.NotNull(booking.SeatNumbers);
+            Assert.Null(booking.RoomName);
+            Assert.Equal(default(DateTime), booking.CreatedAt);
+        }
     }
 }
