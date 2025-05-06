@@ -41,6 +41,23 @@ namespace UnitTests.Application
             Assert.True(repo.Updated);
             Assert.NotNull(publisher.Published);
         }
+
+        [Fact]
+        public async Task HandleAsync_ValidCommand_ReturnsBookingId()
+        {
+            var movieEvent = new MovieEvent { Id = Guid.NewGuid(), Bookings = new System.Collections.Generic.List<Booking>(), Visitors = 0, Capacity = 10 };
+            var repo = new FakeMovieEventRepository { MovieEvent = movieEvent };
+            var uow = new FakeUnitOfWork();
+            var publisher = new FakeEventPublisher();
+            var handler = new BookMovieEventHandler(repo, uow, publisher);
+            var command = new BookMovieEventCommand { MovieEventId = movieEvent.Id, StandardVisitors = 1, DiscountVisitors = 1, RoomName = "Room 1" };
+
+            var result = await handler.HandleAsync(command);
+
+            Assert.NotNull(result);
+            Assert.NotEqual(Guid.Empty, result.BookingId);
+        }
+
         [Fact]
         public async Task HandleAsync_InvalidVisitors_Throws()
         {
