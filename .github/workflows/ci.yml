@@ -33,16 +33,17 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: name directory
-      run:  pwd
-    - name: List files for debug
-      run: ls -R tests/UnitTests
-    - name: List files for debug
-      run: ls -R tests/UnitTests/UnitTests.csproj
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
     - name: Install ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
       
