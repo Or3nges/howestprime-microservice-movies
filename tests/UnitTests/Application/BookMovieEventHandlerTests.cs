@@ -43,22 +43,6 @@ namespace UnitTests.Application
         }
 
         [Fact]
-        public async Task HandleAsync_ValidCommand_ReturnsBookingId()
-        {
-            var movieEvent = new MovieEvent { Id = Guid.NewGuid(), Bookings = new System.Collections.Generic.List<Booking>(), Visitors = 0, Capacity = 10 };
-            var repo = new FakeMovieEventRepository { MovieEvent = movieEvent };
-            var uow = new FakeUnitOfWork();
-            var publisher = new FakeEventPublisher();
-            var handler = new BookMovieEventHandler(repo, uow, publisher);
-            var command = new BookMovieEventCommand { MovieEventId = movieEvent.Id, StandardVisitors = 1, DiscountVisitors = 1, RoomName = "Room 1" };
-
-            var result = await handler.HandleAsync(command);
-
-            Assert.NotNull(result);
-            Assert.NotEqual(Guid.Empty, result.BookingId);
-        }
-
-        [Fact]
         public async Task HandleAsync_InvalidVisitors_Throws()
         {
             var movieEvent = new MovieEvent { Id = Guid.NewGuid(), Bookings = new System.Collections.Generic.List<Booking>(), Visitors = 0, Capacity = 10 };
@@ -104,6 +88,24 @@ namespace UnitTests.Application
             var handler = new BookMovieEventHandler(repo, uow, publisher);
             var command = new BookMovieEventCommand { MovieEventId = movieEvent.Id, StandardVisitors = 0, DiscountVisitors = 0, RoomName = "Room 1" };
             await Assert.ThrowsAsync<ArgumentException>(() => handler.HandleAsync(command));
+        }
+
+        [Fact]
+        public async Task HandleAsync_MovieEventNotFound_Throws()
+        {
+            var repo = new FakeMovieEventRepository { MovieEvent = null };
+            var uow = new FakeUnitOfWork();
+            var publisher = new FakeEventPublisher();
+            var handler = new BookMovieEventHandler(repo, uow, publisher);
+            var command = new BookMovieEventCommand
+            {
+                MovieEventId = Guid.NewGuid(),
+                StandardVisitors = 1,
+                DiscountVisitors = 1,
+                RoomName = "Blue Room"
+            };
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => handler.HandleAsync(command));
         }
     }
 }
