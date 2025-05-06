@@ -33,6 +33,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: List files for debug
+      run: ls -R tests/UnitTests
+    - name: List files for debug
+      run: ls -R tests/UnitTests/UnitTests.csproj
     - name: Install ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
       
