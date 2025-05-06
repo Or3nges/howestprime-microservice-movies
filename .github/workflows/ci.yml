@@ -33,6 +33,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: name directory
+      run:  pwd
     - name: List files for debug
       run: ls -R tests/UnitTests
     - name: List files for debug
