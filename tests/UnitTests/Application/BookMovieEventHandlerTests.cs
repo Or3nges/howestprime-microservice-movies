@@ -52,5 +52,41 @@ namespace UnitTests.Application
             var command = new BookMovieEventCommand { MovieEventId = movieEvent.Id, StandardVisitors = -1, DiscountVisitors = 0, RoomName = "Room 1" };
             await Assert.ThrowsAsync<ArgumentException>(() => handler.HandleAsync(command));
         }
+
+        [Fact]
+        public async Task HandleAsync_OverCapacity_Throws()
+        {
+            var movieEvent = new MovieEvent { Id = Guid.NewGuid(), Bookings = new System.Collections.Generic.List<Booking>(), Visitors = 9, Capacity = 10 };
+            var repo = new FakeMovieEventRepository { MovieEvent = movieEvent };
+            var uow = new FakeUnitOfWork();
+            var publisher = new FakeEventPublisher();
+            var handler = new BookMovieEventHandler(repo, uow, publisher);
+            var command = new BookMovieEventCommand { MovieEventId = movieEvent.Id, StandardVisitors = 2, DiscountVisitors = 0, RoomName = "Room 1" };
+            await Assert.ThrowsAsync<InvalidOperationException>(() => handler.HandleAsync(command));
+        }
+
+        [Fact]
+        public async Task HandleAsync_BookingTooFarInAdvance_Throws()
+        {
+            var movieEvent = new MovieEvent { Id = Guid.NewGuid(), Bookings = new System.Collections.Generic.List<Booking>(), Visitors = 0, Capacity = 10, Date = DateTime.UtcNow.AddDays(15) };
+            var repo = new FakeMovieEventRepository { MovieEvent = movieEvent };
+            var uow = new FakeUnitOfWork();
+            var publisher = new FakeEventPublisher();
+            var handler = new BookMovieEventHandler(repo, uow, publisher);
+            var command = new BookMovieEventCommand { MovieEventId = movieEvent.Id, StandardVisitors = 1, DiscountVisitors = 0, RoomName = "Room 1" };
+            await Assert.ThrowsAsync<InvalidOperationException>(() => handler.HandleAsync(command));
+        }
+
+        [Fact]
+        public async Task HandleAsync_ZeroVisitors_Throws()
+        {
+            var movieEvent = new MovieEvent { Id = Guid.NewGuid(), Bookings = new System.Collections.Generic.List<Booking>(), Visitors = 0, Capacity = 10 };
+            var repo = new FakeMovieEventRepository { MovieEvent = movieEvent };
+            var uow = new FakeUnitOfWork();
+            var publisher = new FakeEventPublisher();
+            var handler = new BookMovieEventHandler(repo, uow, publisher);
+            var command = new BookMovieEventCommand { MovieEventId = movieEvent.Id, StandardVisitors = 0, DiscountVisitors = 0, RoomName = "Room 1" };
+            await Assert.ThrowsAsync<ArgumentException>(() => handler.HandleAsync(command));
+        }
     }
 }

@@ -93,5 +93,88 @@ namespace UnitTests.Application
             };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
         }
+
+        [Fact]
+        public async Task ExecuteAsync_MovieNotFound_ThrowsException()
+        {
+            var useCase = new ScheduleMovieEventUseCase(
+                new FakeMovieRepository { Movie = null },
+                new FakeMovieEventRepository(),
+                new FakeRoomRepository { Room = new Room { Id = Guid.NewGuid(), Name = "Room", Capacity = 10 } }
+            );
+            var command = new ScheduleMovieEventCommand
+            {
+                MovieId = Guid.NewGuid(),
+                RoomId = Guid.NewGuid(),
+                Date = DateTime.UtcNow.AddDays(1),
+                Time = TimeSpan.FromHours(15),
+                Capacity = 10
+            };
+            await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_RoomNotFound_ThrowsException()
+        {
+            var useCase = new ScheduleMovieEventUseCase(
+                new FakeMovieRepository { Movie = new Movie(Guid.NewGuid(), "T", "", "", "", "PG", 120, "") },
+                new FakeMovieEventRepository(),
+                new FakeRoomRepository { Room = null }
+            );
+            var command = new ScheduleMovieEventCommand
+            {
+                MovieId = Guid.NewGuid(),
+                RoomId = Guid.NewGuid(),
+                Date = DateTime.UtcNow.AddDays(1),
+                Time = TimeSpan.FromHours(15),
+                Capacity = 10
+            };
+            await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_ExistingEvent_IsDeletedAndReplaced()
+        {
+            var existingEvent = new MovieEvent { Id = Guid.NewGuid(), RoomId = Guid.NewGuid(), Date = DateTime.UtcNow.AddDays(1), Time = TimeSpan.FromHours(15) };
+            var repo = new FakeMovieEventRepository { Existing = existingEvent };
+            var useCase = new ScheduleMovieEventUseCase(
+                new FakeMovieRepository { Movie = new Movie(Guid.NewGuid(), "T", "", "", "", "PG", 120, "") },
+                repo,
+                new FakeRoomRepository { Room = new Room { Id = existingEvent.RoomId, Name = "Room", Capacity = 10 } }
+            );
+            var command = new ScheduleMovieEventCommand
+            {
+                MovieId = Guid.NewGuid(),
+                RoomId = existingEvent.RoomId,
+                Date = existingEvent.Date,
+                Time = existingEvent.Time,
+                Capacity = 10
+            };
+            var result = await useCase.ExecuteAsync(command);
+            Assert.Equal(repo.Added.Id, result.EventId);
+            Assert.Equal(existingEvent.Id, repo.DeletedId);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_SuccessfulEventScheduling_ReturnsEventId()
+        {
+            var repo = new FakeMovieEventRepository();
+            var useCase = new ScheduleMovieEventUseCase(
+                new FakeMovieRepository { Movie = new Movie(Guid.NewGuid(), "T", "", "", "", "PG", 120, "") },
+                repo,
+                new FakeRoomRepository { Room = new Room { Id = Guid.NewGuid(), Name = "Room", Capacity = 10 } }
+            );
+            var command = new ScheduleMovieEventCommand
+            {
+                MovieId = Guid.NewGuid(),
+                RoomId = Guid.NewGuid(),
+                Date = DateTime.UtcNow.AddDays(1),
+                Time = TimeSpan.FromHours(15),
+                Capacity = 10
+            };
+            var result = await useCase.ExecuteAsync(command);
+            Assert.NotEqual(Guid.Empty, result.EventId);
+            Assert.NotNull(repo.Added);
+        }
     }
 }
