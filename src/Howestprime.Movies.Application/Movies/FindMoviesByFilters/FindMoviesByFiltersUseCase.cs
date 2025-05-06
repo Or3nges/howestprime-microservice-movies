@@ -14,6 +14,9 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesByFilters
 
         public async Task<IEnumerable<Movie>> ExecuteAsync(FindMoviesByFiltersQuery query)
         {
+            if (query == null)
+                return Enumerable.Empty<Movie>();
+
             return await _movieRepository.FindByFiltersAsync(query.Title, query.Genre);
         }
     }

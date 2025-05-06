@@ -83,5 +83,19 @@ namespace UnitTests.Application
             var query = new FindMovieByIdWithEventsQuery { MovieId = movieId };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(query));
         }
+
+        [Fact]
+        public async Task ExecuteAsync_MovieWithNoEvents_ThrowsException()
+        {
+            var movieId = Guid.NewGuid();
+            var movie = new EntitiesMovie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url");
+            var useCase = new FindMovieByIdWithEventsUseCase(
+                new FakeMovieRepository { Movie = movie },
+                new FakeMovieEventRepository { Events = new List<EntitiesMovieEvent>() },
+                new FakeRoomRepository()
+            );
+            var query = new FindMovieByIdWithEventsQuery { MovieId = movieId };
+            await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(query));
+        }
     }
 }

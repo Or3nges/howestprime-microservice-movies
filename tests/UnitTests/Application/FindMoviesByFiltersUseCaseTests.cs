@@ -38,5 +38,13 @@ namespace UnitTests.Application
             var result = await useCase.ExecuteAsync(query);
             Assert.Empty(result);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_NullQuery_ReturnsEmpty()
+        {
+            var useCase = new FindMoviesByFiltersUseCase(new FakeMovieRepository { Movies = new List<Movie>() });
+            var result = await useCase.ExecuteAsync(null);
+            Assert.Empty(result);
+        }
     }
 }

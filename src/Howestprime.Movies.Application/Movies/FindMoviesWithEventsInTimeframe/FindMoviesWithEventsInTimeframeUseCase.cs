@@ -25,6 +25,9 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
 
         public async Task<List<MovieData>> ExecuteAsync(FindMoviesWithEventsInTimeframeQuery query)
         {
+            if (query == null)
+                return new List<MovieData>();
+
             var today = DateTime.UtcNow.Date;
             var end = today.AddDays(14);
             var movies = await _movieRepository.FindByFiltersAsync(query.Title, query.Genre);

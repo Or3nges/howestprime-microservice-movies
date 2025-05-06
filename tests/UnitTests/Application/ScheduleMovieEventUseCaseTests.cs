@@ -176,5 +176,16 @@ namespace UnitTests.Application
             Assert.NotEqual(Guid.Empty, result.EventId);
             Assert.NotNull(repo.Added);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_NullCommand_ThrowsException()
+        {
+            var useCase = new ScheduleMovieEventUseCase(
+                new FakeMovieRepository { Movie = new Movie(Guid.NewGuid(), "T", "", "", "", "PG", 120, "") },
+                new FakeMovieEventRepository(),
+                new FakeRoomRepository { Room = new Room { Id = Guid.NewGuid(), Name = "Room", Capacity = 10 } }
+            );
+            await Assert.ThrowsAsync<ArgumentNullException>(() => useCase.ExecuteAsync(null));
+        }
     }
 }

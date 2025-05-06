@@ -23,6 +23,9 @@ namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent
 
         public async Task<ScheduleMovieEventResult> ExecuteAsync(ScheduleMovieEventCommand command)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
+
             var movie = await _movieRepository.GetByIdAsync(command.MovieId);
             if (movie == null)
                 throw new Exception("Movie not found");

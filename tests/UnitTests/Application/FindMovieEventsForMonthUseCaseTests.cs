@@ -78,6 +78,26 @@ namespace UnitTests.Application
         }
 
         [Fact]
+        public async Task ExecuteAsync_EventsWithNullRoomOrMovie_AreSkipped()
+        {
+            var movieId = Guid.NewGuid();
+            var roomId = Guid.NewGuid();
+            var events = new List<MovieEvent>
+            {
+                new MovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = roomId, Date = new DateTime(2025, 5, 10), Time = TimeSpan.FromHours(15), Capacity = 10 },
+                new MovieEvent { Id = Guid.NewGuid(), MovieId = Guid.NewGuid(), RoomId = roomId, Date = new DateTime(2025, 5, 11), Time = TimeSpan.FromHours(15), Capacity = 10 }, // missing movie
+                new MovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Date = new DateTime(2025, 5, 12), Time = TimeSpan.FromHours(15), Capacity = 10 } // missing room
+            };
+            var movieRepo = new FakeMovieRepository { Movies = { [movieId] = new Movie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url") } };
+            var eventRepo = new FakeMovieEventRepository { Events = events };
+            var roomRepo = new FakeRoomRepository { Rooms = { [roomId] = new Room { Id = roomId, Name = "Room", Capacity = 10 } } };
+            var useCase = new FindMovieEventsForMonthUseCase(movieRepo, eventRepo, roomRepo);
+            var query = new FindMovieEventsForMonthQuery { Year = 2025, Month = 5 };
+            var result = await useCase.ExecuteAsync(query);
+            Assert.Single(result);
+        }
+
+        [Fact]
         public async Task ExecuteAsync_ValidEvents_ReturnsEventData()
         {
             var movieId = Guid.NewGuid();

@@ -107,5 +107,23 @@ namespace UnitTests.Application
             Assert.NotNull(result);
             Assert.Equal(string.Empty, result.PosterUrl);
         }
+
+        [Fact]
+        public async Task ExecuteAsync_NullTitle_ThrowsArgumentException()
+        {
+            var fakeRepo = new FakeMovieRepository();
+            var useCase = new RegisterMovieUseCase(fakeRepo);
+            var command = new RegisterMovieCommand { Title = null, Duration = 120 };
+            await Assert.ThrowsAsync<ArgumentException>(() => useCase.ExecuteAsync(command));
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_ZeroDuration_ThrowsArgumentException()
+        {
+            var fakeRepo = new FakeMovieRepository();
+            var useCase = new RegisterMovieUseCase(fakeRepo);
+            var command = new RegisterMovieCommand { Title = "Test", Duration = 0 };
+            await Assert.ThrowsAsync<ArgumentException>(() => useCase.ExecuteAsync(command));
+        }
     }
 }
