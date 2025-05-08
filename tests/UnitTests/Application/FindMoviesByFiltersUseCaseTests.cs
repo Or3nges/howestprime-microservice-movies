@@ -27,7 +27,7 @@ namespace UnitTests.Application
             var useCase = new FindMoviesByFiltersUseCase(new FakeMovieRepository { Movies = movies });
             var query = new FindMoviesByFiltersQuery { Title = "Title", Genre = "Genre" };
             var result = await useCase.ExecuteAsync(query);
-            Assert.NotEmpty(result);
+            Assert.NotEmpty(result.Data);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace UnitTests.Application
             var useCase = new FindMoviesByFiltersUseCase(new FakeMovieRepository { Movies = new List<Movie>() });
             var query = new FindMoviesByFiltersQuery { Title = "None", Genre = "None" };
             var result = await useCase.ExecuteAsync(query);
-            Assert.Empty(result);
+            Assert.Empty(result.Data);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace UnitTests.Application
         {
             var useCase = new FindMoviesByFiltersUseCase(new FakeMovieRepository { Movies = new List<Movie>() });
             var result = await useCase.ExecuteAsync(null);
-            Assert.Empty(result);
+            Assert.Empty(result.Data);
         }
     }
 }

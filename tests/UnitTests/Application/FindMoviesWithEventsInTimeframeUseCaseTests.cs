@@ -54,8 +54,8 @@ namespace UnitTests.Application
             );
             var query = new FindMoviesWithEventsInTimeframeQuery { Title = "Title", Genre = "Genre" };
             var result = await useCase.ExecuteAsync(query);
-            Assert.NotEmpty(result);
-            Assert.NotEmpty(result.First().Events);
+            Assert.NotEmpty(result.Data);
+            Assert.NotEmpty(result.Data.First().Events);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace UnitTests.Application
             );
             var query = new FindMoviesWithEventsInTimeframeQuery { Title = "None", Genre = "None" };
             var result = await useCase.ExecuteAsync(query);
-            Assert.Empty(result);
+            Assert.Empty(result.Data);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace UnitTests.Application
             );
             var query = new FindMoviesWithEventsInTimeframeQuery { Title = "Title", Genre = "Genre" };
             var result = await useCase.ExecuteAsync(query);
-            Assert.Empty(result);
+            Assert.Empty(result.Data);
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace UnitTests.Application
                 new FakeRoomRepository()
             );
             var result = await useCase.ExecuteAsync(null);
-            Assert.Empty(result);
+            Assert.Empty(result.Data);
         }
     }
 }
