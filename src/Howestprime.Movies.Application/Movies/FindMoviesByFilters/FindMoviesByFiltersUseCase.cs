@@ -12,12 +12,18 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesByFilters
             _movieRepository = movieRepository;
         }
 
-        public async Task<IEnumerable<Movie>> ExecuteAsync(FindMoviesByFiltersQuery query)
+        public async Task<MoviesResponse> ExecuteAsync(FindMoviesByFiltersQuery query)
         {
             if (query == null)
-                return Enumerable.Empty<Movie>();
+                return new MoviesResponse { Data = Enumerable.Empty<Movie>() };
 
-            return await _movieRepository.FindByFiltersAsync(query.Title, query.Genre);
+            var movies = await _movieRepository.FindByFiltersAsync(query.Title, query.Genre);
+            return new MoviesResponse { Data = movies };
         }
+    }
+
+    public class MoviesResponse
+    {
+        public IEnumerable<Movie> Data { get; set; } = Enumerable.Empty<Movie>();
     }
 }

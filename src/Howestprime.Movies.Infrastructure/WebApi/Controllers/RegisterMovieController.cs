@@ -22,6 +22,6 @@ public static class RegisterMovieController
             PosterUrl = request.PosterUrl
         };
         var movie = await useCase.ExecuteAsync(command);
-        return Results.Ok(movie);
+        return Results.Created($"/api/movies/{movie.Id}", movie);
     }
 }

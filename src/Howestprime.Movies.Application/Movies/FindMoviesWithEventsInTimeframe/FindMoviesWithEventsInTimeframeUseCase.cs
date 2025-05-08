@@ -23,10 +23,10 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
             _roomRepository = roomRepository;
         }
 
-        public async Task<List<MovieData>> ExecuteAsync(FindMoviesWithEventsInTimeframeQuery query)
+        public async Task<MoviesWithEventsResponse> ExecuteAsync(FindMoviesWithEventsInTimeframeQuery query)
         {
             if (query == null)
-                return new List<MovieData>();
+                return new MoviesWithEventsResponse { Data = new List<MovieData>() };
 
             var today = DateTime.UtcNow.Date;
             var end = today.AddDays(14);
@@ -40,6 +40,8 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
                 foreach (var ev in events)
                 {
                     var room = await _roomRepository.GetByIdAsync(ev.RoomId);
+                    if (room == null) continue;
+                    
                     eventDatas.Add(new MovieEventData
                     {
                         Id = ev.Id,
@@ -62,7 +64,12 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
                     Events = eventDatas
                 });
             }
-            return result;
+            return new MoviesWithEventsResponse { Data = result };
         }
+    }
+
+    public class MoviesWithEventsResponse
+    {
+        public List<MovieData> Data { get; set; } = new List<MovieData>();
     }
 }

@@ -10,6 +10,6 @@ public static class ScheduleMovieEventController
         ScheduleMovieEventUseCase useCase)
     {
         var result = await useCase.ExecuteAsync(command);
-        return Results.Ok(result);
+        return Results.Created($"/api/movie-events/{result.EventId}", result);
     }
 }

@@ -16,49 +16,52 @@ public static class Routes
 
         movies.MapPost("/", RegisterMovieController.Invoke)
             .WithName("RegisterMovie")
-            .WithDescription("Registers a new movie")
+            .WithDescription("Register a new movie")
+            .Produces<object>(StatusCodes.Status201Created)
             .WithMetadata(new ConsumesAttribute(MediaTypeNames.Application.Json))
             .WithOpenApi();
 
-        movies.MapGet("/search", FindMoviesByFiltersController.Invoke)
+        movies.MapGet("/", FindMoviesByFiltersController.Invoke)
             .WithName("FindMoviesByFilters")
-            .WithDescription("Find movies by filters")
+            .WithDescription("List movies by Title & Genre")
             .WithMetadata(new ProducesAttribute(MediaTypeNames.Application.Json))
             .WithOpenApi();
 
         movies.MapGet("/{id}", FindMovieByIdController.Invoke)
             .WithName("FindMovieById")
-            .WithDescription("Find movie by ID")
-            .WithOpenApi();
-
-        movies.MapGet("/{id}/events", FindMovieByIdWithEventsController.Invoke)
-            .WithName("FindMovieByIdWithEvents")
-            .WithDescription("Find movie by ID with events")
+            .WithDescription("Find a movie by ID")
             .WithOpenApi();
 
         var movieEvents = app.MapGroup("/api/movie-events")
             .WithTags("MovieEvents")
             .WithOpenApi();
 
+        movieEvents.MapGet("/", FindMoviesWithEventsInTimeframeController.Invoke)
+            .WithName("FindMoviesWithEventsInTimeframe")
+            .WithDescription("List all movie events per movie in the next two weeks")
+            .WithOpenApi();
+
         movieEvents.MapPost("/", ScheduleMovieEventController.Invoke)
             .WithName("ScheduleMovieEvent")
-            .WithDescription("Schedules a new movie event")
+            .WithDescription("Schedule a movie event")
+            .Produces<object>(StatusCodes.Status201Created)
             .WithMetadata(new ConsumesAttribute(MediaTypeNames.Application.Json))
+            .WithOpenApi();
+
+        movieEvents.MapGet("/movie", FindMovieByIdWithEventsController.Invoke)
+            .WithName("FindMovieByIdWithEvents")
+            .WithDescription("List all movie events for a specific movie")
             .WithOpenApi();
 
         movieEvents.MapGet("/monthly", FindMovieEventsForMonthController.Invoke)
             .WithName("FindMovieEventsForMonth")
-            .WithDescription("Find movie events for a specific month")
+            .WithDescription("List all movie events for a specific month")
             .WithOpenApi();
 
-        movieEvents.MapGet("/timeframe", FindMoviesWithEventsInTimeframeController.Invoke)
-            .WithName("FindMoviesWithEventsInTimeframe")
-            .WithDescription("Find movie events in a timeframe")
-            .WithOpenApi();
-
-        movieEvents.MapPost("/book", BookMovieEventController.Invoke)
+        movieEvents.MapPost("/{movieEventId}/bookings", BookMovieEventController.Invoke)
             .WithName("BookMovieEvent")
             .WithDescription("Book a movie event")
+            .Produces<object>(StatusCodes.Status201Created)
             .WithMetadata(new ConsumesAttribute(MediaTypeNames.Application.Json))
             .WithOpenApi();
 

@@ -25,13 +25,13 @@ namespace Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents
 
         public async Task<MovieData> ExecuteAsync(FindMovieByIdWithEventsQuery query)
         {
-            var movie = await _movieRepository.GetByIdAsync(query.MovieId);
+            var movie = await _movieRepository.GetByIdAsync(query.movieId);
             if (movie == null)
                 throw new Exception("Movie not found");
 
             var today = DateTime.UtcNow.Date;
             var end = today.AddDays(14);
-            var events = await _movieEventRepository.GetEventsForMovieInRangeAsync(query.MovieId, today, end);
+            var events = await _movieEventRepository.GetEventsForMovieInRangeAsync(query.movieId, today, end);
             if (events == null || !events.Any())
                 throw new Exception("No events found for this movie in the next 14 days");
 

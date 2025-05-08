@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Http;
 public static class FindMovieByIdWithEventsController
 {
     public static async Task<IResult> Invoke(
-        Guid id,
+        [AsParameters] FindMovieByIdWithEventsQuery query,
         FindMovieByIdWithEventsUseCase useCase)
     {
-        var query = new FindMovieByIdWithEventsQuery { MovieId = id };
         var result = await useCase.ExecuteAsync(query);
         return Results.Ok(result);
     }

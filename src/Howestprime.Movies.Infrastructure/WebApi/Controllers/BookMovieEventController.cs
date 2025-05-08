@@ -6,10 +6,14 @@ namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
 public static class BookMovieEventController
 {
     public static async Task<IResult> Invoke(
+        Guid movieEventId,
         BookMovieEventCommand command,
         BookMovieEventHandler handler)
     {
+        command.MovieEventId = movieEventId;
+        
         var result = await handler.HandleAsync(command);
-        return Results.Ok(result);
+        
+        return Results.Created($"/api/movie-events/{movieEventId}/bookings/{result.BookingId}", result);
     }
 }

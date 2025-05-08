@@ -37,13 +37,16 @@ namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent
             if (command.Time != new TimeSpan(15, 0, 0) && command.Time != new TimeSpan(19, 0, 0))
                 throw new Exception("Time must be 15:00 or 19:00");
 
-            if (command.Date.Date < DateTime.UtcNow.Date)
+
+            DateTime dateUtc = DateTime.SpecifyKind(command.Date.Date, DateTimeKind.Utc);
+
+            if (dateUtc < DateTime.UtcNow.Date)
                 throw new Exception("Date must be in the future");
 
             if (command.Capacity <= 0)
                 throw new Exception("Capacity must be greater than 0");
 
-            var existing = await _movieEventRepository.GetByRoomDateTimeAsync(command.RoomId, command.Date, command.Time);
+            var existing = await _movieEventRepository.GetByRoomDateTimeAsync(command.RoomId, dateUtc, command.Time);
             if (existing != null)
                 await _movieEventRepository.DeleteAsync(existing.Id);
 
@@ -52,7 +55,7 @@ namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent
                 Id = Guid.NewGuid(),
                 MovieId = command.MovieId,
                 RoomId = command.RoomId,
-                Date = command.Date.Date,
+                Date = dateUtc,
                 Time = command.Time,
                 Capacity = command.Capacity
             };
