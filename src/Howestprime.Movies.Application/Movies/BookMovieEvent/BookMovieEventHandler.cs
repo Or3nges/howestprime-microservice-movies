@@ -34,9 +34,7 @@ namespace Howestprime.Movies.Application.Movies.BookMovieEvent
 
             var movieEvent = await _movieEventRepository.GetByIdWithBookingsAsync(command.MovieEventId);
             if (movieEvent == null)
-                throw new InvalidOperationException("Movie event not found.");
-
-            string roomName = command.RoomName;
+                throw new InvalidOperationException("Movie event not found.");            string roomName = command.RoomName;
             if (string.IsNullOrEmpty(roomName))
             {
                 var room = await _roomRepository.GetByIdAsync(movieEvent.RoomId);
@@ -44,6 +42,8 @@ namespace Howestprime.Movies.Application.Movies.BookMovieEvent
                 {
                     roomName = room.Name;
                 }
+            }
+            
             var booking = movieEvent.BookEvent(command.StandardVisitors, command.DiscountVisitors, roomName);
 
             await _movieEventRepository.UpdateAsync(movieEvent);
