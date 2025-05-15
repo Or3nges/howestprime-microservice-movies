@@ -29,8 +29,7 @@ namespace Howestprime.Movies.Domain.Entities
             var seatNumbers = new List<int>();
             for (int i = 1; i <= totalVisitors; i++)
                 seatNumbers.Add(Visitors + i);
-
-            if (string.IsNullOrEmpty(roomName))
+                            if (string.IsNullOrWhiteSpace(roomName))
             {
                 throw new ArgumentException("Room name cannot be null or empty when booking a movie event.");
             }
