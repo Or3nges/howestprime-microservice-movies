@@ -24,7 +24,12 @@ public static class UseCaseServices
         services.AddScoped<ScheduleMovieEventUseCase>();
         services.AddScoped<FindMovieEventsForMonthUseCase>();
         services.AddScoped<FindMoviesWithEventsInTimeframeUseCase>();
-        services.AddScoped<BookMovieEventHandler>();
+        services.AddScoped<BookMovieEventHandler>(sp => new BookMovieEventHandler(
+            sp.GetRequiredService<IMovieEventRepository>(),
+            sp.GetRequiredService<IUnitOfWork>(),
+            sp.GetRequiredService<IEventPublisher>(),
+            sp.GetRequiredService<IRoomRepository>()
+        ));
         services.AddScoped<IEventPublisher, MovieEventPublisher>();
         return services;
     }

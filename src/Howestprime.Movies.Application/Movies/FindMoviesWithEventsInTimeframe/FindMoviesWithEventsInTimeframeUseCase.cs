@@ -49,7 +49,7 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
                         Time = TimeOnly.FromTimeSpan(ev.Time),
                         Room = new RoomData { Id = room.Id, Name = room.Name, Capacity = room.Capacity },
                         Capacity = ev.Capacity,
-                        Visitors = 0
+                        Visitors = ev.Visitors
                     });
                 }
                 result.Add(new MovieData

@@ -14,8 +14,7 @@ namespace Howestprime.Movies.Domain.Entities
         public int Capacity { get; set; }
         public int Visitors { get; set; }
         public List<Booking> Bookings { get; set; } = new List<Booking>();
-
-        public Booking BookEvent(int standardVisitors, int discountVisitors, string roomName)
+                public Booking BookEvent(int standardVisitors, int discountVisitors, string roomName)
         {
             if (standardVisitors < 0 || discountVisitors < 0)
                 throw new ArgumentException("Visitor counts must be non-negative.");
@@ -30,6 +29,11 @@ namespace Howestprime.Movies.Domain.Entities
             var seatNumbers = new List<int>();
             for (int i = 1; i <= totalVisitors; i++)
                 seatNumbers.Add(Visitors + i);
+
+            if (string.IsNullOrEmpty(roomName))
+            {
+                throw new ArgumentException("Room name cannot be null or empty when booking a movie event.");
+            }
 
             var booking = new Booking
             {
