@@ -139,5 +139,37 @@ namespace UnitTests.Domain
             Assert.Equal(0, movieEvent.Visitors);
             Assert.NotNull(movieEvent.Bookings);
         }
+        
+        [Fact]
+        public void BookEvent_Throws_When_RoomNameIsNullOrEmpty()
+        {
+            var movieEvent = new MovieEvent
+            {
+                Id = Guid.NewGuid(),
+                MovieId = Guid.NewGuid(),
+                RoomId = Guid.NewGuid(),
+                Date = DateTime.UtcNow,
+                Time = TimeSpan.FromHours(15),
+                Capacity = 100,
+                Visitors = 0,
+                Bookings = new List<Booking>()
+            };
+            
+            
+            var nullException = Assert.Throws<ArgumentException>(
+                () => movieEvent.BookEvent(2, 1, null)
+            );
+            Assert.Equal("Room name cannot be null or empty when booking a movie event.", nullException.Message);
+            
+            var emptyException = Assert.Throws<ArgumentException>(
+                () => movieEvent.BookEvent(2, 1, "")
+            );
+            Assert.Equal("Room name cannot be null or empty when booking a movie event.", emptyException.Message);
+            
+            var whitespaceException = Assert.Throws<ArgumentException>(
+                () => movieEvent.BookEvent(2, 1, "   ")
+            );
+            Assert.Equal("Room name cannot be null or empty when booking a movie event.", whitespaceException.Message);
+        }
     }
 }

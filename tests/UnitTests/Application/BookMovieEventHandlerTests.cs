@@ -136,5 +136,45 @@ namespace UnitTests.Application
 
             await Assert.ThrowsAsync<InvalidOperationException>(() => handler.HandleAsync(command));
         }
+        
+        [Fact]
+        public async Task HandleAsync_NullRoomName_GetsNameFromRepository()
+        {
+            var roomId = Guid.NewGuid();
+            var movieEvent = new MovieEvent { 
+                Id = Guid.NewGuid(), 
+                RoomId = roomId,
+                Bookings = new List<Booking>(), 
+                Visitors = 0, 
+                Capacity = 10 
+            };
+            
+            var repo = new FakeMovieEventRepository { MovieEvent = movieEvent };
+            var uow = new FakeUnitOfWork();
+            var publisher = new FakeEventPublisher();
+            
+            var roomRepo = new FakeRoomRepository { 
+                Room = new Room { Id = roomId, Name = "Test Room Name", Capacity = 100 }
+            };
+            
+            var handler = new BookMovieEventHandler(repo, uow, publisher, roomRepo);
+            
+            var command = new BookMovieEventCommand { 
+                MovieEventId = movieEvent.Id, 
+                StandardVisitors = 2, 
+                DiscountVisitors = 1, 
+                RoomName = null
+            };
+            
+            var result = await handler.HandleAsync(command);
+            
+            Assert.NotNull(result);
+            Assert.Single(movieEvent.Bookings);
+            Assert.Equal(3, movieEvent.Visitors);
+            Assert.True(repo.Updated);
+            Assert.NotNull(publisher.Published);
+
+            Assert.Equal("Test Room Name", movieEvent.Bookings[0].RoomName);
+        }
     }
 }
