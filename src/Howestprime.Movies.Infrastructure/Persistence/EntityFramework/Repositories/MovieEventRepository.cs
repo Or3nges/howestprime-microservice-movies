@@ -57,32 +57,24 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
                 .Include(e => e.Bookings)
                 .FirstOrDefaultAsync(e => e.Id == movieEventId);
         }
-        
-          public async Task UpdateAsync(MovieEvent movieEvent)
+        public async Task UpdateAsync(MovieEvent movieEvent)
         {
-            var existingEvent = await _context.MovieEvents
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == movieEvent.Id);
-                
-            if (existingEvent != null)
+            var lastBooking = movieEvent.Bookings.LastOrDefault();
+            if (lastBooking == null)
             {
-
-                await _context.Database.ExecuteSqlRawAsync(
-                    "UPDATE \"MovieEvents\" SET \"Visitors\" = {0} WHERE \"Id\" = {1}",
-                    movieEvent.Visitors,
-                    movieEvent.Id);
-                    
-                foreach (var booking in movieEvent.Bookings)
-                {
-                    if (_context.Entry(booking).State == EntityState.Detached)
-                    {
-                        _context.Attach(booking);
-                        _context.Entry(booking).State = EntityState.Added;
-                    }
-                }
-                
-                await _context.SaveChangesAsync();
+                return;
             }
+            
+            int visitorsToAdd = lastBooking.StandardVisitors + lastBooking.DiscountVisitors;
+            
+            await _context.Database.ExecuteSqlRawAsync(
+                "UPDATE \"MovieEvents\" SET \"Visitors\" = \"Visitors\" + {0} WHERE \"Id\" = {1}",
+                visitorsToAdd,
+                movieEvent.Id);
+            
+            _context.Set<Booking>().Add(lastBooking);
+            
+            await _context.SaveChangesAsync();
         }
     }
 }
