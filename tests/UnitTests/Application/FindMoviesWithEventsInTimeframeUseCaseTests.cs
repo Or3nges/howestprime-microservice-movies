@@ -46,7 +46,7 @@ namespace UnitTests.Application
             var movieId = Guid.NewGuid();
             var movie = new Movie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url");
             var movies = new List<Movie> { movie };
-            var events = new List<MovieEvent> { new MovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Date = DateTime.UtcNow, Time = TimeSpan.FromHours(15), Capacity = 10 } };
+            var events = new List<MovieEvent> { new MovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Time = DateTime.UtcNow.AddHours(15), Capacity = 10 } };
             var useCase = new FindMoviesWithEventsInTimeframeUseCase(
                 new FakeMovieRepository { Movies = movies },
                 new FakeMovieEventRepository { EventsByMovie = { [movieId] = events } },

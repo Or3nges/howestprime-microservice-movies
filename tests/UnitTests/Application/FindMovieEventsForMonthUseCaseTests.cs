@@ -68,9 +68,9 @@ namespace UnitTests.Application
             var roomId = Guid.NewGuid();
             var events = new List<EntitiesMovieEvent>
             {
-                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = roomId, Date = new DateTime(2025, 5, 10), Time = TimeSpan.FromHours(15), Capacity = 10 },
-                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = Guid.NewGuid(), RoomId = roomId, Date = new DateTime(2025, 5, 11), Time = TimeSpan.FromHours(15), Capacity = 10 }, // missing movie
-                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Date = new DateTime(2025, 5, 12), Time = TimeSpan.FromHours(15), Capacity = 10 } // missing room
+                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = roomId, Time = new DateTime(2025, 5, 10, 15, 0, 0, DateTimeKind.Utc), Capacity = 10 },
+                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = Guid.NewGuid(), RoomId = roomId, Time = new DateTime(2025, 5, 11, 15, 0, 0, DateTimeKind.Utc), Capacity = 10 }, // missing movie
+                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Time = new DateTime(2025, 5, 12, 15, 0, 0, DateTimeKind.Utc), Capacity = 10 } // missing room
             };
             var movieRepo = new FakeMovieRepository { Movies = { [movieId] = new EntitiesMovie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url") } };
             var eventRepo = new FakeMovieEventRepository { Events = events };
@@ -88,9 +88,9 @@ namespace UnitTests.Application
             var roomId = Guid.NewGuid();
             var events = new List<EntitiesMovieEvent>
             {
-                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = roomId, Date = new DateTime(2025, 5, 10), Time = TimeSpan.FromHours(15), Capacity = 10 },
-                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = Guid.NewGuid(), RoomId = roomId, Date = new DateTime(2025, 5, 11), Time = TimeSpan.FromHours(15), Capacity = 10 }, // missing movie
-                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Date = new DateTime(2025, 5, 12), Time = TimeSpan.FromHours(15), Capacity = 10 } // missing room
+                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = roomId, Time = new DateTime(2025, 5, 10, 15, 0, 0, DateTimeKind.Utc), Capacity = 10 },
+                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = Guid.NewGuid(), RoomId = roomId, Time = new DateTime(2025, 5, 11, 15, 0, 0, DateTimeKind.Utc), Capacity = 10 }, // missing movie
+                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Time = new DateTime(2025, 5, 12, 15, 0, 0, DateTimeKind.Utc), Capacity = 10 } // missing room
             };
             var movieRepo = new FakeMovieRepository { Movies = { [movieId] = new EntitiesMovie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url") } };
             var eventRepo = new FakeMovieEventRepository { Events = events };
@@ -108,7 +108,7 @@ namespace UnitTests.Application
             var roomId = Guid.NewGuid();
             var events = new List<EntitiesMovieEvent>
             {
-                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = roomId, Date = new DateTime(2025, 5, 10), Time = TimeSpan.FromHours(15), Capacity = 10 }
+                new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = roomId, Time = new DateTime(2025, 5, 10, 15, 0, 0, DateTimeKind.Utc), Capacity = 10 }
             };
             var movieRepo = new FakeMovieRepository { Movies = { [movieId] = new EntitiesMovie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url") } };
             var eventRepo = new FakeMovieEventRepository { Events = events };

@@ -2,26 +2,23 @@ namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
 
 using Howestprime.Movies.Application;
 using Howestprime.Movies.Application.Movies.RegisterMovie;
-using Howestprime.Movies.Application.DTO;
+using Howestprime.Movies.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 public static class RegisterMovieController
 {
     public static async Task<IResult> Invoke(
-        RegisterMovieRequest request,
+        RegisterMovieCommand command,
         RegisterMovieUseCase useCase)
     {
-        var command = new RegisterMovieCommand
+        try
         {
-            Title = request.Title!,
-            Description = request.Description,
-            Genre = request.Genre,
-            Actors = request.Actors,
-            AgeRating = request.AgeRating,
-            Duration = request.Duration,
-            PosterUrl = request.PosterUrl
-        };
-        var movie = await useCase.ExecuteAsync(command);
-        return Results.Created($"/api/movies/{movie.Id}", movie);
+            var result = await useCase.ExecuteAsync(command);
+            return Results.Created($"/api/movies/{result.Id}", result);
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
     }
 }

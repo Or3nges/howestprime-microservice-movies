@@ -50,8 +50,7 @@
 //                 Id = Guid.NewGuid(),
 //                 MovieId = movieId1,
 //                 RoomId = room.Id,
-//                 Date = DateTime.UtcNow.Date.AddDays(2),
-//                 Time = new TimeSpan(15, 0, 0),
+//                 Time = DateTime.UtcNow.Date.AddDays(2).Add(new TimeSpan(15, 0, 0)), // Use combined Time field
 //                 Capacity = 50,
 //                 Visitors = 0,
 //                 Bookings = new List<Booking>()
@@ -63,8 +62,7 @@
 //                 Id = Guid.NewGuid(),
 //                 MovieId = movieId2,
 //                 RoomId = room.Id,
-//                 Date = DateTime.UtcNow.Date.AddDays(3),
-//                 Time = new TimeSpan(15, 0, 0),
+//                 Time = DateTime.UtcNow.Date.AddDays(3).Add(new TimeSpan(15, 0, 0)), // Use combined Time field
 //                 Capacity = 50,
 //                 Visitors = 0,
 //                 Bookings = new List<Booking>()

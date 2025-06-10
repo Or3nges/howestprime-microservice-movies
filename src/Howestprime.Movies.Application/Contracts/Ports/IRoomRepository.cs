@@ -7,6 +7,8 @@ namespace Howestprime.Movies.Application.Contracts.Ports
     public interface IRoomRepository
     {
         Task<Room?> GetByIdAsync(Guid id);
+        Task<Room> AddAsync(Room room);
+        Task<IEnumerable<Room>> GetAllAsync();
         Task SeedRoomsAsync();
     }
 }

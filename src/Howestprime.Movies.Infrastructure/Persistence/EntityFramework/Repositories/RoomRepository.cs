@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Entities;
@@ -17,6 +18,18 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
         public async Task<Room?> GetByIdAsync(Guid id)
         {
             return await _context.Rooms.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Room>> GetAllAsync()
+        {
+            return await _context.Rooms.ToListAsync();
+        }
+
+        public async Task<Room> AddAsync(Room room)
+        {
+            _context.Rooms.Add(room);
+            await _context.SaveChangesAsync();
+            return room;
         }
 
         public async Task SeedRoomsAsync()

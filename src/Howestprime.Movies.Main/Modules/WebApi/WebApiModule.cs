@@ -1,5 +1,6 @@
 using Howestprime.Movies.Infrastructure.WebApi;
 using Howestprime.Movies.Infrastructure.WebApi.Shared.Extensions;
+using Howestprime.Movies.Infrastructure.WebApi.Controllers;
 using Microsoft.OpenApi.Models;
 
 namespace Howestprime.Movies.Main.Modules.WebApi;
@@ -40,8 +41,7 @@ public static class WebApiModule
         
         app
             .UseHttpsRedirection();
-
-        app.MapHealthChecks("/health");
+                app.MapHealthChecks("/health");
 
         return app.MapRoutes();
     }

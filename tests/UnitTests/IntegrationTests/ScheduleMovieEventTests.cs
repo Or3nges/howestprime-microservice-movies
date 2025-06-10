@@ -46,9 +46,9 @@
 //             {
 //                 MovieId = movie.Id,
 //                 RoomId = room.Id,
-//                 Date = DateTime.UtcNow.Date.AddDays(1),
-//                 Time = new TimeSpan(15, 0, 0),
-//                 Capacity = 50
+//                 StartDate = DateTime.UtcNow.Date.AddDays(1).Add(new TimeSpan(15, 0, 0)),
+//                 Capacity = 100,
+//                 Visitors = 0
 //             };
 //             var result = await useCase.ExecuteAsync(command);
 
@@ -75,9 +75,9 @@
 //             {
 //                 MovieId = Guid.NewGuid(),
 //                 RoomId = room.Id,
-//                 Date = DateTime.UtcNow.Date.AddDays(1),
-//                 Time = new TimeSpan(15, 0, 0),
-//                 Capacity = 50
+//                 StartDate = DateTime.UtcNow.Date.AddDays(1).Add(new TimeSpan(15, 0, 0)),
+//                 Capacity = 100,
+//                 Visitors = 0
 //             };
 //             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
 //         }
@@ -100,9 +100,9 @@
 //             {
 //                 MovieId = movie.Id,
 //                 RoomId = room.Id,
-//                 Date = DateTime.UtcNow.Date.AddDays(1),
-//                 Time = new TimeSpan(14, 0, 0), // Invalid time
-//                 Capacity = 50
+//                 StartDate = DateTime.UtcNow.Date.AddDays(1).Add(new TimeSpan(14, 0, 0)), // Invalid time
+//                 Capacity = 100,
+//                 Visitors = 0
 //             };
 //             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
 //         }
@@ -125,9 +125,9 @@
 //             {
 //                 MovieId = movie.Id,
 //                 RoomId = room.Id,
-//                 Date = DateTime.UtcNow.Date.AddDays(-1), // Past date
-//                 Time = new TimeSpan(15, 0, 0),
-//                 Capacity = 50
+//                 StartDate = DateTime.UtcNow.Date.AddDays(-1).Add(new TimeSpan(15, 0, 0)), // Past date
+//                 Capacity = 100,
+//                 Visitors = 0
 //             };
 //             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
 //         }
@@ -150,9 +150,9 @@
 //             {
 //                 MovieId = movie.Id,
 //                 RoomId = room.Id,
-//                 Date = DateTime.UtcNow.Date.AddDays(1),
-//                 Time = new TimeSpan(15, 0, 0),
-//                 Capacity = 0 // Invalid capacity
+//                 StartDate = DateTime.UtcNow.Date.AddDays(1).Add(new TimeSpan(15, 0, 0)),
+//                 Capacity = 0, // Invalid capacity
+//                 Visitors = 0
 //             };
 //             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
 //         }

@@ -42,11 +42,13 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
                     var room = await _roomRepository.GetByIdAsync(ev.RoomId);
                     if (room == null) continue;
                     
+                    // Use Time directly since it's now a DateTime
+                    DateTime eventDateTime = DateTime.SpecifyKind(ev.Time, DateTimeKind.Utc);
+                    
                     eventDatas.Add(new MovieEventData
                     {
                         Id = ev.Id,
-                        Date = DateOnly.FromDateTime(ev.Date),
-                        Time = TimeOnly.FromTimeSpan(ev.Time),
+                        DateTime = eventDateTime,
                         Room = new RoomData { Id = room.Id, Name = room.Name, Capacity = room.Capacity },
                         Capacity = ev.Capacity,
                         Visitors = ev.Visitors

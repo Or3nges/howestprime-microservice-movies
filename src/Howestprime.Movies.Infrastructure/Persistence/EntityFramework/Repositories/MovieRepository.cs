@@ -17,6 +17,22 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
             _context = context;
         }
 
+        public Task<Optional<Movie>> ById(MovieId){
+            return _context.Movies
+            .FirstOrDefaultAsync(movie => movie.Id == id)
+            .ContinueWith(task => Optional.Of(task.Result));
+        }
+
+        public Task Remove(Movie entity){
+            throw new NotImplementedException();
+        }
+
+        public Task Save(Movie entity){
+            return ById(entity.Id)
+            .ifPresentAsync(u => _context.Movies.Update(u))
+            .ifNotPresentAsync(async() => await _context.Movies.AddAsync(entity));
+        }
+
         public async Task<Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _context.Movies.FindAsync(new object[] { id }, cancellationToken);

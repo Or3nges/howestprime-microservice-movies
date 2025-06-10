@@ -9,7 +9,14 @@ public static class FindMovieEventsForMonthController
         [AsParameters] FindMovieEventsForMonthQuery query,
         FindMovieEventsForMonthUseCase useCase)
     {
-        var result = await useCase.ExecuteAsync(query);
-        return Results.Ok(result);
+        try
+        {
+            var result = await useCase.ExecuteAsync(query);
+            return Results.Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest(new { error = ex.Message });
+        }
     }
 }

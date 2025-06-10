@@ -40,13 +40,13 @@ namespace Howestprime.Movies.Application.Movies.FindMovieEventsForMonth
                 
                 if (movie == null || room == null) continue;
                 
+                // Use Time directly since it's now a DateTime
+                DateTime eventDateTime = DateTime.SpecifyKind(ev.Time, DateTimeKind.Utc);
+                
                 result.Add(new ExtendedMovieEventData
                 {
                     Id = ev.Id,
-                    Time = DateTime.SpecifyKind(
-                        new DateTime(ev.Date.Year, ev.Date.Month, ev.Date.Day)
-                            .Add(ev.Time), 
-                        DateTimeKind.Utc),
+                    Time = eventDateTime,
                     Room = new RoomData 
                     { 
                         Id = room.Id, 

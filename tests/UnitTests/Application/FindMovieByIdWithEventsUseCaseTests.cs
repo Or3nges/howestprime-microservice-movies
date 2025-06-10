@@ -45,13 +45,13 @@ namespace UnitTests.Application
         {
             var movieId = Guid.NewGuid();
             var movie = new EntitiesMovie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url");
-            var events = new List<EntitiesMovieEvent> { new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Date = DateTime.UtcNow, Time = TimeSpan.FromHours(15), Capacity = 10 } };
+            var events = new List<EntitiesMovieEvent> { new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Time = DateTime.UtcNow.AddHours(15), Capacity = 10 } };
             var useCase = new FindMovieByIdWithEventsUseCase(
                 new FakeMovieRepository { Movie = movie },
                 new FakeMovieEventRepository { Events = events },
                 new FakeRoomRepository()
             );
-            var query = new FindMovieByIdWithEventsQuery { movieId = movieId };
+            var query = new FindMovieByIdWithEventsQuery { MovieId = movieId };
             var result = await useCase.ExecuteAsync(query);
             Assert.NotNull(result);
             Assert.Equal(movieId, result.Id);
@@ -66,7 +66,7 @@ namespace UnitTests.Application
                 new FakeMovieEventRepository { Events = new List<EntitiesMovieEvent>() },
                 new FakeRoomRepository()
             );
-            var query = new FindMovieByIdWithEventsQuery { movieId = Guid.NewGuid() };
+            var query = new FindMovieByIdWithEventsQuery { MovieId = Guid.NewGuid() };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(query));
         }
 
@@ -80,7 +80,7 @@ namespace UnitTests.Application
                 new FakeMovieEventRepository { Events = new List<EntitiesMovieEvent>() },
                 new FakeRoomRepository()
             );
-            var query = new FindMovieByIdWithEventsQuery { movieId = movieId };
+            var query = new FindMovieByIdWithEventsQuery { MovieId = movieId };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(query));
         }
 
@@ -94,7 +94,7 @@ namespace UnitTests.Application
                 new FakeMovieEventRepository { Events = new List<EntitiesMovieEvent>() },
                 new FakeRoomRepository()
             );
-            var query = new FindMovieByIdWithEventsQuery { movieId = movieId };
+            var query = new FindMovieByIdWithEventsQuery { MovieId = movieId };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(query));
         }
     }

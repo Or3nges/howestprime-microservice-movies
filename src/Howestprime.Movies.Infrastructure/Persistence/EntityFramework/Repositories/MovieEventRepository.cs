@@ -11,6 +11,7 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
     public class MovieEventRepository : IMovieEventRepository
     {
         private readonly MoviesDbContext _context;
+
         public MovieEventRepository(MoviesDbContext context)
         {
             _context = context;
@@ -18,21 +19,40 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
 
         public async Task<MovieEvent?> GetByRoomDateTimeAsync(Guid roomId, DateTime date, TimeSpan time)
         {
-            return await _context.MovieEvents.FirstOrDefaultAsync(e => e.RoomId == roomId && e.Date == date && e.Time == time);
+            // Combine date and time for comparison with the new Time field
+            var eventTime = date.Add(time);
+            
+            return await _context.MovieEvents
+                .Where(e => e.RoomId == roomId)
+                .Where(e => e.Time == eventTime)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<MovieEvent>> GetEventsForMovieInRangeAsync(Guid movieId, DateTime start, DateTime end)
         {
             return await _context.MovieEvents
-                .Where(e => e.MovieId == movieId && e.Date >= start && e.Date <= end)
+                .Where(e => e.MovieId == movieId)
+                .Where(e => e.Time >= start && e.Time <= end)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<MovieEvent>> GetEventsInRangeAsync(DateTime start, DateTime end)
         {
             return await _context.MovieEvents
-                .Where(e => e.Date >= start && e.Date <= end)
+                .Where(e => e.Time >= start && e.Time <= end)
                 .ToListAsync();
+        }
+
+        public async Task<MovieEvent> GetByIdWithBookingsAsync(Guid movieEventId)
+        {
+            var result = await _context.MovieEvents
+                .Include(e => e.Bookings)
+                .FirstOrDefaultAsync(e => e.Id == movieEventId);
+            
+            if (result == null)
+                throw new InvalidOperationException($"MovieEvent with ID {movieEventId} not found");
+                
+            return result;
         }
 
         public async Task AddAsync(MovieEvent movieEvent)
@@ -41,40 +61,20 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Guid id)
-        {
-            var entity = await _context.MovieEvents.FindAsync(id);
-            if (entity != null)
-            {
-                _context.MovieEvents.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
-        }
-        
-                public async Task<MovieEvent> GetByIdWithBookingsAsync(Guid movieEventId)
-        {
-            return await _context.MovieEvents
-                .Include(e => e.Bookings)
-                .FirstOrDefaultAsync(e => e.Id == movieEventId);
-        }
         public async Task UpdateAsync(MovieEvent movieEvent)
         {
-            var lastBooking = movieEvent.Bookings.LastOrDefault();
-            if (lastBooking == null)
-            {
-                return;
-            }
-            
-            int visitorsToAdd = lastBooking.StandardVisitors + lastBooking.DiscountVisitors;
-            
-            await _context.Database.ExecuteSqlRawAsync(
-                "UPDATE \"MovieEvents\" SET \"Visitors\" = \"Visitors\" + {0} WHERE \"Id\" = {1}",
-                visitorsToAdd,
-                movieEvent.Id);
-            
-            _context.Set<Booking>().Add(lastBooking);
-            
+            _context.MovieEvents.Update(movieEvent);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var movieEvent = await _context.MovieEvents.FindAsync(id);
+            if (movieEvent != null)
+            {
+                _context.MovieEvents.Remove(movieEvent);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -18,6 +18,6 @@ public sealed class QueryContextPostgres(
         string username = configuration.GetValue<string>("Database:Username")!;
         string password = configuration.GetValue<string>("Database:Password")!;
 
-        return connectionString.Replace("{username}", username).Replace("{password}", password);
+        return connectionString.Replace("devuser", username).Replace("devpassword", password);
     }
 }

@@ -51,9 +51,7 @@ namespace UnitTests.Application
             {
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow.AddDays(1),
-                Time = TimeSpan.FromHours(10), // Invalid
-                Capacity = 10
+                StartDate = DateTime.UtcNow.AddDays(1).Date.Add(TimeSpan.FromHours(10)) // Invalid time
             };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
         }
@@ -69,9 +67,7 @@ namespace UnitTests.Application
             {
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow.AddDays(-1), // Past
-                Time = TimeSpan.FromHours(15),
-                Capacity = 10
+                StartDate = DateTime.UtcNow.AddDays(-1).Date.Add(TimeSpan.FromHours(15)) // Past date
             };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
         }
@@ -87,9 +83,7 @@ namespace UnitTests.Application
             {
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow.AddDays(1),
-                Time = TimeSpan.FromHours(15),
-                Capacity = 0 // Invalid
+                StartDate = DateTime.UtcNow.AddDays(1).Date.Add(TimeSpan.FromHours(15))
             };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
         }
@@ -106,9 +100,7 @@ namespace UnitTests.Application
             {
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow.AddDays(1),
-                Time = TimeSpan.FromHours(15),
-                Capacity = 10
+                StartDate = DateTime.UtcNow.AddDays(1).Date.Add(TimeSpan.FromHours(15))
             };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
         }
@@ -125,9 +117,7 @@ namespace UnitTests.Application
             {
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow.AddDays(1),
-                Time = TimeSpan.FromHours(15),
-                Capacity = 10
+                StartDate = DateTime.UtcNow.AddDays(1).Date.Add(TimeSpan.FromHours(15))
             };
             await Assert.ThrowsAsync<Exception>(() => useCase.ExecuteAsync(command));
         }
@@ -135,7 +125,7 @@ namespace UnitTests.Application
         [Fact]
         public async Task ExecuteAsync_ExistingEvent_IsDeletedAndReplaced()
         {
-            var existingEvent = new MovieEvent { Id = Guid.NewGuid(), RoomId = Guid.NewGuid(), Date = DateTime.UtcNow.AddDays(1), Time = TimeSpan.FromHours(15) };
+            var existingEvent = new MovieEvent { Id = Guid.NewGuid(), RoomId = Guid.NewGuid(), Time = DateTime.UtcNow.AddDays(1).AddHours(15) };
             var repo = new FakeMovieEventRepository { Existing = existingEvent };
             var useCase = new ScheduleMovieEventUseCase(
                 new FakeMovieRepository { Movie = new Movie(Guid.NewGuid(), "T", "", "", "", "PG", 120, "") },
@@ -146,9 +136,9 @@ namespace UnitTests.Application
             {
                 MovieId = Guid.NewGuid(),
                 RoomId = existingEvent.RoomId,
-                Date = existingEvent.Date,
-                Time = existingEvent.Time,
-                Capacity = 10
+                StartDate = existingEvent.Time,
+                Capacity = 100,
+                Visitors = 0
             };
             var result = await useCase.ExecuteAsync(command);
             Assert.Equal(repo.Added.Id, result.EventId);
@@ -168,9 +158,9 @@ namespace UnitTests.Application
             {
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow.AddDays(1),
-                Time = TimeSpan.FromHours(15),
-                Capacity = 10
+                StartDate = DateTime.UtcNow.AddDays(1).Date.Add(TimeSpan.FromHours(15)),
+                Capacity = 100,
+                Visitors = 0
             };
             var result = await useCase.ExecuteAsync(command);
             Assert.NotEqual(Guid.Empty, result.EventId);

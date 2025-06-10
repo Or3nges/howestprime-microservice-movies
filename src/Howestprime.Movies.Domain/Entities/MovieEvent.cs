@@ -9,12 +9,15 @@ namespace Howestprime.Movies.Domain.Entities
         public Guid Id { get; set; }
         public Guid MovieId { get; set; }
         public Guid RoomId { get; set; }
-        public DateTime Date { get; set; }
-        public TimeSpan Time { get; set; }
+        
+        // Change from Date + TimeSpan Time to single DateTime Time
+        public DateTime Time { get; set; }
+        
         public int Capacity { get; set; }
         public int Visitors { get; set; }
         public List<Booking> Bookings { get; set; } = new List<Booking>();
-                public Booking BookEvent(int standardVisitors, int discountVisitors, string roomName)
+        
+        public Booking BookEvent(int standardVisitors, int discountVisitors, string roomName)
         {
             if (standardVisitors < 0 || discountVisitors < 0)
                 throw new ArgumentException("Visitor counts must be non-negative.");
@@ -23,16 +26,17 @@ namespace Howestprime.Movies.Domain.Entities
                 throw new ArgumentException("Total visitor count must be greater than 0.");
             if (Visitors + totalVisitors > Capacity)
                 throw new InvalidOperationException("Cannot book more visitors than room capacity.");
-            if ((Date - DateTime.UtcNow).TotalDays > 14)
+                
+            // Use Time directly since it's now a DateTime
+            if ((Time - DateTime.UtcNow).TotalDays > 14)
                 throw new InvalidOperationException("Movie event can only be booked within 14 days.");
+
+            if (string.IsNullOrWhiteSpace(roomName))
+                throw new ArgumentException("Room name cannot be null or empty when booking a movie event.");
 
             var seatNumbers = new List<int>();
             for (int i = 1; i <= totalVisitors; i++)
                 seatNumbers.Add(Visitors + i);
-                            if (string.IsNullOrWhiteSpace(roomName))
-            {
-                throw new ArgumentException("Room name cannot be null or empty when booking a movie event.");
-            }
 
             var booking = new Booking
             {

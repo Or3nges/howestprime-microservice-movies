@@ -1,13 +1,11 @@
 using Howestprime.Movies.Domain.Shared;
 using System.Threading.Tasks;
 using Howestprime.Movies.Domain.Entities;
+using Domaincrafters.Domain;
 
 namespace Howestprime.Movies.Application.Contracts.Ports
 {
-    public interface IMovieRepository
+    public interface IMovieRepository : IRepository<Movie, MovieId>
     {
-        Task<Howestprime.Movies.Domain.Entities.Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<Howestprime.Movies.Domain.Entities.Movie> AddAsync(Howestprime.Movies.Domain.Entities.Movie movie, CancellationToken cancellationToken = default);
-        Task<IEnumerable<Howestprime.Movies.Domain.Entities.Movie>> FindByFiltersAsync(string? title, string? genre, CancellationToken cancellationToken = default);
     }
 }

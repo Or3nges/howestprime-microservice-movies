@@ -14,6 +14,21 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configure the MovieEvent entity
+            modelBuilder.Entity<MovieEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.MovieId).IsRequired();
+                entity.Property(e => e.RoomId).IsRequired();
+                entity.Property(e => e.Time).IsRequired(); // Now a single DateTime field
+                entity.Property(e => e.Capacity).IsRequired();
+                entity.Property(e => e.Visitors).IsRequired();
+                
+                entity.HasMany(e => e.Bookings)
+                      .WithOne()
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+            
             modelBuilder.Entity<Movie>(entity =>
             {
                 entity.HasKey(m => m.Id);
@@ -25,19 +40,6 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
                 entity.Property(m => m.Duration);
                 entity.Property(m => m.PosterUrl);
             });
-            modelBuilder.Entity<MovieEvent>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.MovieId).IsRequired();
-                entity.Property(e => e.RoomId).IsRequired();
-                entity.Property(e => e.Date).IsRequired();
-                entity.Property(e => e.Time).IsRequired();
-                entity.Property(e => e.Capacity).IsRequired();
-                entity.Property(e => e.Visitors).IsRequired();
-                entity.HasMany(e => e.Bookings)
-                      .WithOne()
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
             modelBuilder.Entity<Room>(entity =>
             {
                 entity.HasKey(r => r.Id);
@@ -45,6 +47,7 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
                 entity.Property(r => r.Capacity).IsRequired();
             });
             modelBuilder.ApplyConfiguration(new BookingConfiguration());
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

@@ -4,6 +4,6 @@ namespace Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents
 {
     public class FindMovieByIdWithEventsQuery
     {
-        public Guid movieId { get; set; }
+        public Guid MovieId { get; set; }
     }
 }

@@ -34,31 +34,30 @@ namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent
             if (room == null)
                 throw new Exception("Room not found");
 
-            if (command.Time != new TimeSpan(15, 0, 0) && command.Time != new TimeSpan(19, 0, 0))
+            // Extract time component for validation
+            TimeSpan timeOfDay = command.StartDate.TimeOfDay;
+            if (timeOfDay != new TimeSpan(15, 0, 0) && timeOfDay != new TimeSpan(19, 0, 0))
                 throw new Exception("Time must be 15:00 or 19:00");
 
+            // Make sure the date is in UTC
+            DateTime eventTimeUtc = DateTime.SpecifyKind(command.StartDate, DateTimeKind.Utc);
 
-            DateTime dateUtc = DateTime.SpecifyKind(command.Date.Date, DateTimeKind.Utc);
-
-            if (dateUtc < DateTime.UtcNow.Date)
+            if (eventTimeUtc < DateTime.UtcNow)
                 throw new Exception("Date must be in the future");
 
             if (command.Capacity <= 0)
                 throw new Exception("Capacity must be greater than 0");
-
-            var existing = await _movieEventRepository.GetByRoomDateTimeAsync(command.RoomId, dateUtc, command.Time);
-            if (existing != null)
-                await _movieEventRepository.DeleteAsync(existing.Id);
 
             var movieEvent = new MovieEvent
             {
                 Id = Guid.NewGuid(),
                 MovieId = command.MovieId,
                 RoomId = command.RoomId,
-                Date = dateUtc,
-                Time = command.Time,
-                Capacity = command.Capacity
+                Time = eventTimeUtc,
+                Capacity = command.Capacity,
+                Visitors = command.Visitors
             };
+            
             await _movieEventRepository.AddAsync(movieEvent);
             return new ScheduleMovieEventResult { EventId = movieEvent.Id };
         }

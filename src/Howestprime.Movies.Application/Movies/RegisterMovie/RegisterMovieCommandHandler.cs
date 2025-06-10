@@ -16,15 +16,16 @@ public class RegisterMovieCommandHandler
     {
         var movie = new Movie(
             Guid.NewGuid(),
-            command.Title,
-            command.Description ?? string.Empty,
-            command.Genre ?? string.Empty,
-            command.Actors ?? string.Empty,
-            command.AgeRating.ToString(),
+            command.Title ?? "Untitled",
+            command.Description ?? "",
+            command.Genre ?? "",
+            command.Actors ?? "",
+            command.AgeRating ?? "",
             command.Duration,
-            command.PosterUrl ?? string.Empty
+            command.PosterUrl ?? ""
         );
-
-        return await _movieRepository.AddAsync(movie);
+        
+        await _movieRepository.AddAsync(movie);
+        return movie;
     }
 }

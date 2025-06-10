@@ -1,7 +1,7 @@
 using Howestprime.Movies.Application.Movies.BookMovieEvent;
 using Microsoft.AspNetCore.Http;
 
-namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
+namespace Howestprime.Movies.Infrastructure.WebApi.Controllers.Booking;
 
 public static class BookMovieEventController
 {

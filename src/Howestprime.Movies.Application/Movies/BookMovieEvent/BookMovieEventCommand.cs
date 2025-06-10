@@ -5,6 +5,6 @@ namespace Howestprime.Movies.Application.Movies.BookMovieEvent
         public Guid MovieEventId { get; set; }
         public int StandardVisitors { get; set; }
         public int DiscountVisitors { get; set; }
-        public string RoomName { get; set; }
+        public string? RoomName { get; set; } // Make nullable to fix warning
     }
 }

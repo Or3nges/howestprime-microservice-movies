@@ -13,15 +13,13 @@ namespace UnitTests.Domain
             var id = Guid.NewGuid();
             var movieId = Guid.NewGuid();
             var roomId = Guid.NewGuid();
-            var date = DateTime.UtcNow;
-            var time = TimeSpan.FromHours(15);
+            var time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)); // Use single DateTime field
             var movieEvent = new MovieEvent
             {
                 Id = id,
                 MovieId = movieId,
                 RoomId = roomId,
-                Date = date,
-                Time = time,
+                Time = time, // Single DateTime field
                 Capacity = 100,
                 Visitors = 0,
                 Bookings = new List<Booking>()
@@ -29,7 +27,6 @@ namespace UnitTests.Domain
             Assert.Equal(id, movieEvent.Id);
             Assert.Equal(movieId, movieEvent.MovieId);
             Assert.Equal(roomId, movieEvent.RoomId);
-            Assert.Equal(date, movieEvent.Date);
             Assert.Equal(time, movieEvent.Time);
             Assert.Equal(100, movieEvent.Capacity);
             Assert.Equal(0, movieEvent.Visitors);
@@ -44,8 +41,7 @@ namespace UnitTests.Domain
                 Id = Guid.NewGuid(),
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow,
-                Time = TimeSpan.FromHours(15),
+                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
                 Capacity = 100,
                 Visitors = 0,
                 Bookings = new List<Booking>()
@@ -65,8 +61,7 @@ namespace UnitTests.Domain
                 Id = Guid.NewGuid(),
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow,
-                Time = TimeSpan.FromHours(15),
+                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
                 Capacity = 100,
                 Visitors = 0,
                 Bookings = new List<Booking>()
@@ -83,8 +78,7 @@ namespace UnitTests.Domain
                 Id = Guid.NewGuid(),
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow,
-                Time = TimeSpan.FromHours(15),
+                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
                 Capacity = 100,
                 Visitors = 0,
                 Bookings = new List<Booking>()
@@ -100,8 +94,7 @@ namespace UnitTests.Domain
                 Id = Guid.NewGuid(),
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow,
-                Time = TimeSpan.FromHours(15),
+                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
                 Capacity = 5,
                 Visitors = 4,
                 Bookings = new List<Booking>()
@@ -117,8 +110,7 @@ namespace UnitTests.Domain
                 Id = Guid.NewGuid(),
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow.AddDays(15),
-                Time = TimeSpan.FromHours(15),
+                Time = DateTime.UtcNow.AddDays(15).Add(TimeSpan.FromHours(15)), // Single DateTime field
                 Capacity = 100,
                 Visitors = 0,
                 Bookings = new List<Booking>()
@@ -133,8 +125,7 @@ namespace UnitTests.Domain
             Assert.Equal(Guid.Empty, movieEvent.Id);
             Assert.Equal(Guid.Empty, movieEvent.MovieId);
             Assert.Equal(Guid.Empty, movieEvent.RoomId);
-            Assert.Equal(default(DateTime), movieEvent.Date);
-            Assert.Equal(default(TimeSpan), movieEvent.Time);
+            Assert.Equal(default(DateTime), movieEvent.Time); // Single DateTime field
             Assert.Equal(0, movieEvent.Capacity);
             Assert.Equal(0, movieEvent.Visitors);
             Assert.NotNull(movieEvent.Bookings);
@@ -148,8 +139,7 @@ namespace UnitTests.Domain
                 Id = Guid.NewGuid(),
                 MovieId = Guid.NewGuid(),
                 RoomId = Guid.NewGuid(),
-                Date = DateTime.UtcNow,
-                Time = TimeSpan.FromHours(15),
+                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
                 Capacity = 100,
                 Visitors = 0,
                 Bookings = new List<Booking>()
