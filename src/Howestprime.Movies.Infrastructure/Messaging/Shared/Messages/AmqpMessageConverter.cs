@@ -41,8 +41,6 @@ public static class AmqpMessageConverter
 
         if (domainEvent is Howestprime.Movies.Domain.Events.BookingOpened bo)
         {
-            var seats = bo.SeatNumbers.Select(n => new { room = bo.RoomName, number = n, row = n });
-
             var message = new
             {
                 bookingId = bo.BookingId,
@@ -51,7 +49,7 @@ public static class AmqpMessageConverter
                 time = bo.Time,
                 standardVisitors = bo.StandardVisitors,
                 discountedVisitors = bo.DiscountVisitors,
-                seats = seats
+                seats = bo.SeatNumbers
             };
 
             return JsonSerializer.Serialize(message, options);
