@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Shared;
 using Howestprime.Movies.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Howestprime.Movies.Application.Movies.FindMovieById
 {
@@ -21,13 +22,16 @@ namespace Howestprime.Movies.Application.Movies.FindMovieById
                 throw new Exception($"Movie with id {query.Id} not found");
             return new MovieData
             {
-                Id = movie.Id,
+                Id = movie.Id.Value,
                 Title = movie.Title,
-                Genres = movie.Genre,
+                Description = movie.Description,
+                Year = movie.Year,
+                Genre = movie.Genre,
                 Actors = movie.Actors,
-                AgeRating = movie.AgeRating,
+                AgeRating = int.Parse(movie.AgeRating),
                 Duration = movie.Duration,
-                PosterUrl = movie.PosterUrl
+                PosterUrl = movie.PosterUrl,
+                Events = new List<MovieEventData>()
             };
         }
     }

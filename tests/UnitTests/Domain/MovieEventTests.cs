@@ -10,20 +10,11 @@ namespace UnitTests.Domain
         [Fact]
         public void MovieEvent_CanBeCreated_WithValidData()
         {
-            var id = Guid.NewGuid();
-            var movieId = Guid.NewGuid();
-            var roomId = Guid.NewGuid();
-            var time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)); // Use single DateTime field
-            var movieEvent = new MovieEvent
-            {
-                Id = id,
-                MovieId = movieId,
-                RoomId = roomId,
-                Time = time, // Single DateTime field
-                Capacity = 100,
-                Visitors = 0,
-                Bookings = new List<Booking>()
-            };
+            var id = new MovieEventId();
+            var movieId = new MovieId();
+            var roomId = new RoomId();
+            var time = DateTime.UtcNow.Add(TimeSpan.FromHours(15));
+            var movieEvent = new MovieEvent(id, movieId, roomId, time, 100);
             Assert.Equal(id, movieEvent.Id);
             Assert.Equal(movieId, movieEvent.MovieId);
             Assert.Equal(roomId, movieEvent.RoomId);
@@ -36,16 +27,13 @@ namespace UnitTests.Domain
         [Fact]
         public void MovieEvent_BookEvent_AddsBookingAndIncrementsVisitors()
         {
-            var movieEvent = new MovieEvent
-            {
-                Id = Guid.NewGuid(),
-                MovieId = Guid.NewGuid(),
-                RoomId = Guid.NewGuid(),
-                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
-                Capacity = 100,
-                Visitors = 0,
-                Bookings = new List<Booking>()
-            };
+            var movieEvent = new MovieEvent(
+                new MovieEventId(),
+                new MovieId(),
+                new RoomId(),
+                DateTime.UtcNow.Add(TimeSpan.FromHours(15)),
+                100
+            );
             int initialVisitors = movieEvent.Visitors;
             int standard = 2, discount = 1;
             var booking = movieEvent.BookEvent(standard, discount, "Room 1");
@@ -56,95 +44,67 @@ namespace UnitTests.Domain
         [Fact]
         public void BookEvent_Throws_When_Visitors_Negative()
         {
-            var movieEvent = new MovieEvent
-            {
-                Id = Guid.NewGuid(),
-                MovieId = Guid.NewGuid(),
-                RoomId = Guid.NewGuid(),
-                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
-                Capacity = 100,
-                Visitors = 0,
-                Bookings = new List<Booking>()
-            };
+            var movieEvent = new MovieEvent(
+                new MovieEventId(),
+                new MovieId(),
+                new RoomId(),
+                DateTime.UtcNow.Add(TimeSpan.FromHours(15)),
+                100
+            );
             Assert.Throws<ArgumentException>(() => movieEvent.BookEvent(-1, 0, "Room 1"));
             Assert.Throws<ArgumentException>(() => movieEvent.BookEvent(0, -1, "Room 1"));
         }
 
         [Fact]
-        public void BookEvent_Throws_When_Zero_Visitors()
+        public void BookEvent_Throws_When_TotalVisitors_Zero()
         {
-            var movieEvent = new MovieEvent
-            {
-                Id = Guid.NewGuid(),
-                MovieId = Guid.NewGuid(),
-                RoomId = Guid.NewGuid(),
-                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
-                Capacity = 100,
-                Visitors = 0,
-                Bookings = new List<Booking>()
-            };
+            var movieEvent = new MovieEvent(
+                new MovieEventId(),
+                new MovieId(),
+                new RoomId(),
+                DateTime.UtcNow.Add(TimeSpan.FromHours(15)),
+                100
+            );
             Assert.Throws<ArgumentException>(() => movieEvent.BookEvent(0, 0, "Room 1"));
         }
 
         [Fact]
-        public void BookEvent_Throws_When_OverCapacity()
+        public void BookEvent_Throws_When_ExceedsCapacity()
         {
-            var movieEvent = new MovieEvent
-            {
-                Id = Guid.NewGuid(),
-                MovieId = Guid.NewGuid(),
-                RoomId = Guid.NewGuid(),
-                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
-                Capacity = 5,
-                Visitors = 4,
-                Bookings = new List<Booking>()
-            };
-            Assert.Throws<InvalidOperationException>(() => movieEvent.BookEvent(2, 0, "Room 1"));
-        }
-
-        [Fact]
-        public void BookEvent_Throws_When_BookingTooFarInAdvance()
-        {
-            var movieEvent = new MovieEvent
-            {
-                Id = Guid.NewGuid(),
-                MovieId = Guid.NewGuid(),
-                RoomId = Guid.NewGuid(),
-                Time = DateTime.UtcNow.AddDays(15).Add(TimeSpan.FromHours(15)), // Single DateTime field
-                Capacity = 100,
-                Visitors = 0,
-                Bookings = new List<Booking>()
-            };
+            var movieEvent = new MovieEvent(
+                new MovieEventId(),
+                new MovieId(),
+                new RoomId(),
+                DateTime.UtcNow.Add(TimeSpan.FromHours(15)),
+                100
+            );
+            movieEvent.BookEvent(50, 50, "Room 1"); // Fill up the room
             Assert.Throws<InvalidOperationException>(() => movieEvent.BookEvent(1, 0, "Room 1"));
         }
 
         [Fact]
-        public void MovieEvent_DefaultValues_AreCorrect()
+        public void BookEvent_Throws_When_TooFarInFuture()
         {
-            var movieEvent = new MovieEvent();
-            Assert.Equal(Guid.Empty, movieEvent.Id);
-            Assert.Equal(Guid.Empty, movieEvent.MovieId);
-            Assert.Equal(Guid.Empty, movieEvent.RoomId);
-            Assert.Equal(default(DateTime), movieEvent.Time); // Single DateTime field
-            Assert.Equal(0, movieEvent.Capacity);
-            Assert.Equal(0, movieEvent.Visitors);
-            Assert.NotNull(movieEvent.Bookings);
+            var movieEvent = new MovieEvent(
+                new MovieEventId(),
+                new MovieId(),
+                new RoomId(),
+                DateTime.UtcNow.AddDays(15), // More than 14 days in the future
+                100
+            );
+            Assert.Throws<InvalidOperationException>(() => movieEvent.BookEvent(1, 0, "Room 1"));
         }
-        
+
         [Fact]
         public void BookEvent_Throws_When_RoomNameIsNullOrEmpty()
         {
-            var movieEvent = new MovieEvent
-            {
-                Id = Guid.NewGuid(),
-                MovieId = Guid.NewGuid(),
-                RoomId = Guid.NewGuid(),
-                Time = DateTime.UtcNow.Add(TimeSpan.FromHours(15)), // Single DateTime field
-                Capacity = 100,
-                Visitors = 0,
-                Bookings = new List<Booking>()
-            };
-            
+            var movieEvent = new MovieEvent(
+                new MovieEventId(),
+                new MovieId(),
+                new RoomId(),
+                DateTime.UtcNow.Add(TimeSpan.FromHours(15)),
+                100
+            );
             
             var nullException = Assert.Throws<ArgumentException>(
                 () => movieEvent.BookEvent(2, 1, null)

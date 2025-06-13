@@ -1,16 +1,20 @@
+using System;
+using System.Collections.Generic;
+using Howestprime.Movies.Domain.Entities;
+
 namespace Howestprime.Movies.Domain.Shared
 {
     public class MovieEvent
     {
-        public Guid Id { get; private set; }
-        public Guid MovieId { get; private set; }
-        public Guid RoomId { get; private set; }
+        public MovieEventId Id { get; private set; }
+        public MovieId MovieId { get; private set; }
+        public RoomId RoomId { get; private set; }
         public DateOnly Date { get; private set; }
         public TimeOnly Time { get; private set; }
         public int Visitors { get; private set; }
-        public List<Guid> Bookings { get; private set; }
+        public List<BookingId> Bookings { get; private set; }
 
-        public MovieEvent(Guid id, Guid movieId, Guid roomId, DateOnly date, TimeOnly time, int visitors, List<Guid> bookings)
+        public MovieEvent(MovieEventId id, MovieId movieId, RoomId roomId, DateOnly date, TimeOnly time, int visitors, List<BookingId> bookings)
         {
             Id = id;
             MovieId = movieId;
@@ -18,7 +22,7 @@ namespace Howestprime.Movies.Domain.Shared
             Date = date;
             Time = time;
             Visitors = visitors;
-            Bookings = bookings ?? new List<Guid>();
+            Bookings = bookings ?? new List<BookingId>();
         }
     }
 }

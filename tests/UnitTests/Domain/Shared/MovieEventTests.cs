@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Howestprime.Movies.Domain.Shared;
+using Howestprime.Movies.Domain.Entities;
 using Xunit;
 
 namespace UnitTests.Domain.Shared
@@ -10,13 +11,13 @@ namespace UnitTests.Domain.Shared
         [Fact]
         public void MovieEvent_CanBeCreated_WithValidData()
         {
-            var id = Guid.NewGuid();
-            var movieId = Guid.NewGuid();
-            var roomId = Guid.NewGuid();
+            var id = new MovieEventId();
+            var movieId = new MovieId();
+            var roomId = new RoomId();
             var date = DateOnly.FromDateTime(DateTime.Today);
             var time = TimeOnly.FromTimeSpan(TimeSpan.FromHours(15));
             var visitors = 5;
-            var bookings = new List<Guid> { Guid.NewGuid() };
+            var bookings = new List<BookingId> { new BookingId() };
             var movieEvent = new MovieEvent(id, movieId, roomId, date, time, visitors, bookings);
             Assert.Equal(id, movieEvent.Id);
             Assert.Equal(movieId, movieEvent.MovieId);
@@ -30,10 +31,18 @@ namespace UnitTests.Domain.Shared
         [Fact]
         public void MovieEvent_DefaultValues_AreCorrect()
         {
-            var movieEvent = new MovieEvent(Guid.Empty, Guid.Empty, Guid.Empty, default, default, 0, new List<Guid>());
-            Assert.Equal(Guid.Empty, movieEvent.Id);
-            Assert.Equal(Guid.Empty, movieEvent.MovieId);
-            Assert.Equal(Guid.Empty, movieEvent.RoomId);
+            var movieEvent = new MovieEvent(
+                new MovieEventId(),
+                new MovieId(),
+                new RoomId(),
+                default,
+                default,
+                0,
+                new List<BookingId>()
+            );
+            Assert.Equal(new MovieEventId(), movieEvent.Id);
+            Assert.Equal(new MovieId(), movieEvent.MovieId);
+            Assert.Equal(new RoomId(), movieEvent.RoomId);
             Assert.Equal(default(DateOnly), movieEvent.Date);
             Assert.Equal(default(TimeOnly), movieEvent.Time);
             Assert.Equal(0, movieEvent.Visitors);

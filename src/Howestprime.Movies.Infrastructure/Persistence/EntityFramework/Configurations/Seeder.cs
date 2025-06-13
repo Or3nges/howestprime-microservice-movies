@@ -3,6 +3,8 @@ using Howestprime.Movies.Domain.Facilities;
 using Howestprime.Movies.Domain.Movies;
 */
 using Microsoft.EntityFrameworkCore;
+using Howestprime.Movies.Domain.Entities;
+using Domaincrafters.Domain;
 
 namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Configurations;
 /**
@@ -41,11 +43,25 @@ public static class Seeder
     ];
     */
 
+    private static readonly IList<Room> _rooms = [
+        new Room(
+            new RoomId("1a38a0f1-6539-4c71-a938-47636088783b"),
+            "Red Room",
+            200
+        ),
+        new Room(
+            new RoomId("1208ee1a-2cfb-4159-b311-8bf842861bc6"),
+            "Blue Room",
+            100
+        )
+    ];
+
     public static void Seed(this ModelBuilder modelBuilder)
     {
         /*
         modelBuilder.Entity<Room>().HasData(_rooms);
         modelBuilder.Entity<Movie>().HasData(_movies);
         */
+        modelBuilder.Entity<Room>().HasData(_rooms);
     }
 }

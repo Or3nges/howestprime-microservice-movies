@@ -9,7 +9,7 @@ public static class FindMovieByIdController
         Guid id,
         FindMovieByIdUseCase useCase)
     {
-        var query = new MovieByIdQuery { Id = id };
+        var query = new MovieByIdQuery { Id = new Howestprime.Movies.Domain.Entities.MovieId(id.ToString()) };
         var movie = await useCase.ExecuteAsync(query);
         return movie != null ? Results.Ok(movie) : Results.NotFound();
     }

@@ -1,8 +1,10 @@
+using Howestprime.Movies.Domain.Entities;
+
 namespace Howestprime.Movies.Domain.Shared
 {
     public class Movie
     {
-        public Guid Id { get; private set; }
+        public MovieId Id { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
         public string Genres { get; private set; }
@@ -11,7 +13,7 @@ namespace Howestprime.Movies.Domain.Shared
         public int Duration { get; private set; }
         public string PosterUrl { get; private set; }
 
-        public Movie(Guid id, string title, string description, string genres, string actors, string ageRating, int duration, string posterUrl)
+        public Movie(MovieId id, string title, string description, string genres, string actors, string ageRating, int duration, string posterUrl)
         {
             Id = id;
             Title = title;

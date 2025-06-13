@@ -7,12 +7,12 @@ namespace Howestprime.Movies.Application.Contracts.Ports
 {
     public interface IMovieEventRepository
     {
-        Task<MovieEvent?> GetByRoomDateTimeAsync(Guid roomId, DateTime date, TimeSpan time);
+        Task<MovieEvent?> GetByRoomDateTimeAsync(RoomId roomId, DateTime date, TimeSpan time);
         Task AddAsync(MovieEvent movieEvent);
-        Task DeleteAsync(Guid id);
-        Task<IEnumerable<MovieEvent>> GetEventsForMovieInRangeAsync(Guid movieId, DateTime start, DateTime end);
+        Task DeleteAsync(MovieEventId id);
+        Task<IEnumerable<MovieEvent>> GetEventsForMovieInRangeAsync(MovieId movieId, DateTime start, DateTime end);
         Task<IEnumerable<MovieEvent>> GetEventsInRangeAsync(DateTime start, DateTime end);
-        Task<MovieEvent> GetByIdWithBookingsAsync(Guid movieEventId);
+        Task<MovieEvent> GetByIdWithBookingsAsync(MovieEventId movieEventId);
         Task UpdateAsync(MovieEvent movieEvent);
     }
 }

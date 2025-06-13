@@ -1,3 +1,5 @@
+using Howestprime.Movies.Domain.Entities;
+
 namespace Howestprime.Movies.Domain.Shared
 {
     public enum BookingStatus
@@ -8,14 +10,14 @@ namespace Howestprime.Movies.Domain.Shared
 
     public class Booking
     {
-        public Guid Id { get; private set; }
-        public Guid MovieEventId { get; private set; }
+        public BookingId Id { get; private set; }
+        public MovieEventId MovieEventId { get; private set; }
         public int Visitors { get; private set; }
         public int DiscountedVisitors { get; private set; }
         public int StandardVisitors { get; private set; }
         public BookingStatus Status { get; private set; }
 
-        public Booking(Guid id, Guid movieEventId, int visitors, int discountedVisitors, int standardVisitors, BookingStatus status)
+        public Booking(BookingId id, MovieEventId movieEventId, int visitors, int discountedVisitors, int standardVisitors, BookingStatus status)
         {
             Id = id;
             MovieEventId = movieEventId;

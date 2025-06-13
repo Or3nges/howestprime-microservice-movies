@@ -15,11 +15,52 @@ public static class AmqpMessageConverter
         };
     }
 
-    public static string Serialize(IDomainEvent domainEvent, string? contentType = "application/json")
+    public static string Serialize(object domainEvent, string? contentType = "application/json")
     {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        if (domainEvent is Howestprime.Movies.Domain.Events.MovieRegistered mr)
+        {
+            var message = new
+            {
+                id = mr.MovieId,
+                title = mr.Title,
+                year = mr.Year,
+                duration = mr.Duration,
+                genres = new[] { mr.Genre },
+                actors = mr.Actors,
+                ageRating = mr.AgeRating,
+                poster = mr.PosterUrl
+            };
+
+            return JsonSerializer.Serialize(message, options);
+        }
+
+        if (domainEvent is Howestprime.Movies.Domain.Events.BookingOpened bo)
+        {
+            var seats = bo.SeatNumbers.Select(n => new { room = bo.RoomName, number = n, row = n });
+
+            var message = new
+            {
+                bookingId = bo.BookingId,
+                movieId = bo.MovieId,
+                room = bo.RoomName,
+                time = bo.Time,
+                standardVisitors = bo.StandardVisitors,
+                discountedVisitors = bo.DiscountVisitors,
+                seats = seats
+            };
+
+            return JsonSerializer.Serialize(message, options);
+        }
+
+
         return contentType switch
         {
-            "application/json" => JsonSerializer.Serialize(domainEvent, domainEvent.GetType()),
+            "application/json" => JsonSerializer.Serialize(domainEvent, domainEvent.GetType(), options),
             _ => throw new NotImplementedException()
         };
     }

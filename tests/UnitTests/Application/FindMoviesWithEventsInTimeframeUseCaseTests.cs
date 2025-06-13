@@ -5,7 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe;
-using Howestprime.Movies.Domain.Entities;
+using EntitiesMovie = Howestprime.Movies.Domain.Entities.Movie;
+using EntitiesMovieEvent = Howestprime.Movies.Domain.Entities.MovieEvent;
 using Xunit;
 
 namespace UnitTests.Application
@@ -14,22 +15,21 @@ namespace UnitTests.Application
     {
         private class FakeMovieRepository : IMovieRepository
         {
-            public IEnumerable<Movie> Movies = new List<Movie>();
-            public Task<Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) => Task.FromResult((Movie?)null);
-            public Task<Movie> AddAsync(Movie movie, CancellationToken cancellationToken = default) => throw new NotImplementedException();
-            public Task<IEnumerable<Movie>> FindByFiltersAsync(string? title, string? genre, CancellationToken cancellationToken = default) => Task.FromResult(Movies);
+            public IEnumerable<EntitiesMovie> Movies = new List<EntitiesMovie>();
+            public Task<EntitiesMovie?> GetByIdAsync(MovieId id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+            public Task<EntitiesMovie> AddAsync(EntitiesMovie movie, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+            public Task<IEnumerable<EntitiesMovie>> FindByFiltersAsync(string? title, string? genre, CancellationToken cancellationToken = default) => Task.FromResult(Movies);
         }
         private class FakeMovieEventRepository : IMovieEventRepository
         {
-            public Dictionary<Guid, IEnumerable<MovieEvent>> EventsByMovie = new();
-            public Task<MovieEvent?> GetByRoomDateTimeAsync(Guid roomId, DateTime date, TimeSpan time) => throw new NotImplementedException();
-            public Task AddAsync(MovieEvent movieEvent) => throw new NotImplementedException();
+            public IEnumerable<EntitiesMovieEvent> Events = new List<EntitiesMovieEvent>();
+            public Task<EntitiesMovieEvent?> GetByRoomDateTimeAsync(RoomId roomId, DateTime date, TimeSpan time) => throw new NotImplementedException();
+            public Task AddAsync(EntitiesMovieEvent movieEvent) => throw new NotImplementedException();
             public Task DeleteAsync(Guid id) => throw new NotImplementedException();
-            public Task<IEnumerable<MovieEvent>> GetEventsForMovieInRangeAsync(Guid movieId, DateTime start, DateTime end) =>
-                Task.FromResult(EventsByMovie.ContainsKey(movieId) ? EventsByMovie[movieId] : Enumerable.Empty<MovieEvent>());
-            public Task<IEnumerable<MovieEvent>> GetEventsInRangeAsync(DateTime start, DateTime end) => throw new NotImplementedException();
-            public Task<MovieEvent> GetByIdWithBookingsAsync(Guid movieEventId) => throw new NotImplementedException();
-            public Task UpdateAsync(MovieEvent movieEvent) => throw new NotImplementedException();
+            public Task<IEnumerable<EntitiesMovieEvent>> GetEventsForMovieInRangeAsync(MovieId movieId, DateTime start, DateTime end) => Task.FromResult(Events);
+            public Task<IEnumerable<EntitiesMovieEvent>> GetEventsInRangeAsync(DateTime start, DateTime end) => throw new NotImplementedException();
+            public Task<EntitiesMovieEvent> GetByIdWithBookingsAsync(Guid movieEventId) => throw new NotImplementedException();
+            public Task UpdateAsync(EntitiesMovieEvent movieEvent) => throw new NotImplementedException();
         }
         private class FakeRoomRepository : IRoomRepository
         {
@@ -41,28 +41,44 @@ namespace UnitTests.Application
         }
 
         [Fact]
-        public async Task ExecuteAsync_ReturnsMoviesWithEvents()
+        public async Task ExecuteAsync_ReturnsMoviesWithEvents_WhenEventsExist()
         {
-            var movieId = Guid.NewGuid();
-            var movie = new Movie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url");
-            var movies = new List<Movie> { movie };
-            var events = new List<MovieEvent> { new MovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = Guid.NewGuid(), Time = DateTime.UtcNow.AddHours(15), Capacity = 10 } };
+            var movieId = new MovieId();
+            var movies = new List<EntitiesMovie> { new EntitiesMovie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url") };
+            var events = new List<EntitiesMovieEvent> { new EntitiesMovieEvent { Id = Guid.NewGuid(), MovieId = movieId, RoomId = new RoomId(), Time = DateTime.UtcNow.AddHours(15), Capacity = 10 } };
             var useCase = new FindMoviesWithEventsInTimeframeUseCase(
                 new FakeMovieRepository { Movies = movies },
-                new FakeMovieEventRepository { EventsByMovie = { [movieId] = events } },
-                new FakeRoomRepository()
+                new FakeMovieEventRepository { Events = events }
             );
-            var query = new FindMoviesWithEventsInTimeframeQuery { Title = "Title", Genre = "Genre" };
+            var query = new FindMoviesWithEventsInTimeframeQuery { StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(7) };
             var result = await useCase.ExecuteAsync(query);
-            Assert.NotEmpty(result.Data);
-            Assert.NotEmpty(result.Data.First().Events);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Single(result);
+            Assert.Equal(movieId, result[0].Id);
+            Assert.NotEmpty(result[0].Events);
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_ReturnsEmptyList_WhenNoEventsFound()
+        {
+            var movieId = new MovieId();
+            var movies = new List<EntitiesMovie> { new EntitiesMovie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url") };
+            var useCase = new FindMoviesWithEventsInTimeframeUseCase(
+                new FakeMovieRepository { Movies = movies },
+                new FakeMovieEventRepository { Events = new List<EntitiesMovieEvent>() }
+            );
+            var query = new FindMoviesWithEventsInTimeframeQuery { StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(7) };
+            var result = await useCase.ExecuteAsync(query);
+            Assert.NotNull(result);
+            Assert.Empty(result);
         }
 
         [Fact]
         public async Task ExecuteAsync_NoMoviesFound_ReturnsEmpty()
         {
             var useCase = new FindMoviesWithEventsInTimeframeUseCase(
-                new FakeMovieRepository { Movies = new List<Movie>() },
+                new FakeMovieRepository { Movies = new List<EntitiesMovie>() },
                 new FakeMovieEventRepository(),
                 new FakeRoomRepository()
             );
@@ -74,13 +90,12 @@ namespace UnitTests.Application
         [Fact]
         public async Task ExecuteAsync_MoviesWithNoEvents_ReturnsEmpty()
         {
-            var movieId = Guid.NewGuid();
-            var movie = new Movie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url");
-            var movies = new List<Movie> { movie };
+            var movieId = new MovieId();
+            var movie = new EntitiesMovie(movieId, "Title", "Desc", "Genre", "Actors", "PG", 120, "url");
+            var movies = new List<EntitiesMovie> { movie };
             var useCase = new FindMoviesWithEventsInTimeframeUseCase(
                 new FakeMovieRepository { Movies = movies },
-                new FakeMovieEventRepository { EventsByMovie = { [movieId] = new List<MovieEvent>() } },
-                new FakeRoomRepository()
+                new FakeMovieEventRepository { Events = new List<EntitiesMovieEvent>() }
             );
             var query = new FindMoviesWithEventsInTimeframeQuery { Title = "Title", Genre = "Genre" };
             var result = await useCase.ExecuteAsync(query);
@@ -91,7 +106,7 @@ namespace UnitTests.Application
         public async Task ExecuteAsync_NullQuery_ReturnsEmpty()
         {
             var useCase = new FindMoviesWithEventsInTimeframeUseCase(
-                new FakeMovieRepository { Movies = new List<Movie>() },
+                new FakeMovieRepository { Movies = new List<EntitiesMovie>() },
                 new FakeMovieEventRepository(),
                 new FakeRoomRepository()
             );

@@ -1,30 +1,25 @@
-using System;
-using System.Threading.Tasks;
 using Howestprime.Movies.Domain.Entities;
 using Howestprime.Movies.Application.Contracts.Ports;
 
 namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent
 {
-    public class ScheduleMovieEventUseCase
+    public class ScheduleMovieEventCommandHandler
     {
         private readonly IMovieRepository _movieRepository;
         private readonly IRoomRepository _roomRepository;
         private readonly IMovieEventRepository _movieEventRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public ScheduleMovieEventUseCase(
+        public ScheduleMovieEventCommandHandler(
             IMovieRepository movieRepository,
             IRoomRepository roomRepository,
-            IMovieEventRepository movieEventRepository,
-            IUnitOfWork unitOfWork)
+            IMovieEventRepository movieEventRepository)
         {
             _movieRepository = movieRepository;
             _roomRepository = roomRepository;
             _movieEventRepository = movieEventRepository;
-            _unitOfWork = unitOfWork;
         }
 
-        public async Task ExecuteAsync(ScheduleMovieEventCommand command)
+        public async Task Handle(ScheduleMovieEventCommand command)
         {
             var movieId = new MovieId(command.MovieId);
             var roomId = new RoomId(command.RoomId);
@@ -37,24 +32,14 @@ namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent
             if (room == null)
                 throw new Exception($"Room with ID {roomId} not found.");
 
-            var existingEvent = await _movieEventRepository.GetByRoomDateTimeAsync(
-                roomId,
-                command.StartDate.Date,
-                command.StartDate.TimeOfDay);
-
-            if (existingEvent != null)
-                throw new InvalidOperationException("A movie event already exists in this room at the specified time.");
-
             var movieEvent = new MovieEvent(
                 new MovieEventId(),
                 movieId,
                 roomId,
                 command.StartDate,
-                room.Capacity
-            );
+                room.Capacity);
 
             await _movieEventRepository.AddAsync(movieEvent);
-            await _unitOfWork.CommitAsync();
         }
     }
-}
+} 

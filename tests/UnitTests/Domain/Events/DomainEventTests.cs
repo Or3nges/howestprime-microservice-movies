@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Howestprime.Movies.Domain.Events;
 using Howestprime.Movies.Domain.Entities;
 using Xunit;
@@ -10,15 +11,17 @@ namespace UnitTests.Domain.Events
         [Fact]
         public void BookingOpened_CanBeCreated_WithValidData()
         {
-            var booking = new Booking
-            {
-                Id = Guid.NewGuid(),
-                StandardVisitors = 2,
-                DiscountVisitors = 1,
-                RoomName = "Room 1",
-                CreatedAt = DateTime.UtcNow
-            };
-            var movieEventId = Guid.NewGuid();
+            var booking = new Booking(
+                new BookingId(),
+                2,
+                1,
+                BookingStatus.Open,
+                PaymentStatus.Pending,
+                new List<int> { 1, 2, 3 },
+                "Room 1",
+                DateTime.UtcNow
+            );
+            var movieEventId = new MovieEventId();
             var evt = new BookingOpened(booking, movieEventId);
             Assert.Equal(booking.Id, evt.BookingId);
             Assert.Equal(movieEventId, evt.MovieEventId);

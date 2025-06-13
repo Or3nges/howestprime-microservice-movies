@@ -17,22 +17,16 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
             _context = context;
         }
 
-        public async Task<MovieEvent?> GetByRoomDateTimeAsync(Guid roomId, DateTime date, TimeSpan time)
+        public async Task<MovieEvent?> GetByRoomDateTimeAsync(RoomId roomId, DateTime date, TimeSpan time)
         {
-            // Combine date and time for comparison with the new Time field
-            var eventTime = date.Add(time);
-            
             return await _context.MovieEvents
-                .Where(e => e.RoomId == roomId)
-                .Where(e => e.Time == eventTime)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(e => e.RoomId == roomId && e.Time.Date == date.Date && e.Time.TimeOfDay == time);
         }
 
-        public async Task<IEnumerable<MovieEvent>> GetEventsForMovieInRangeAsync(Guid movieId, DateTime start, DateTime end)
+        public async Task<IEnumerable<MovieEvent>> GetEventsForMovieInRangeAsync(MovieId movieId, DateTime start, DateTime end)
         {
             return await _context.MovieEvents
-                .Where(e => e.MovieId == movieId)
-                .Where(e => e.Time >= start && e.Time <= end)
+                .Where(e => e.MovieId == movieId && e.Time >= start && e.Time <= end)
                 .ToListAsync();
         }
 
@@ -43,7 +37,7 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
                 .ToListAsync();
         }
 
-        public async Task<MovieEvent> GetByIdWithBookingsAsync(Guid movieEventId)
+        public async Task<MovieEvent> GetByIdWithBookingsAsync(MovieEventId movieEventId)
         {
             var result = await _context.MovieEvents
                 .Include(e => e.Bookings)
@@ -57,7 +51,7 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
 
         public async Task AddAsync(MovieEvent movieEvent)
         {
-            _context.MovieEvents.Add(movieEvent);
+            await _context.MovieEvents.AddAsync(movieEvent);
             await _context.SaveChangesAsync();
         }
 
@@ -67,7 +61,7 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Reposito
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(MovieEventId id)
         {
             var movieEvent = await _context.MovieEvents.FindAsync(id);
             if (movieEvent != null)

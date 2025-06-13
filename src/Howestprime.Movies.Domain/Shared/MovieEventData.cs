@@ -1,16 +1,24 @@
+using System;
 using System.Text.Json.Serialization;
+using Howestprime.Movies.Domain.Entities;
 
 namespace Howestprime.Movies.Domain.Shared
 {
     public class MovieEventData
     {
-        public Guid Id { get; set; }
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+        
+        [JsonPropertyName("room")]
+        public RoomData Room { get; set; }
         
         [JsonPropertyName("time")]
-        public DateTime DateTime { get; set; }  // Combined date and time in UTC
+        public DateTime Time { get; set; }
         
-        public RoomData Room { get; set; }
+        [JsonPropertyName("movieId")]
+        public string MovieId { get; set; }
+        
+        [JsonPropertyName("capacity")]
         public int Capacity { get; set; }
-        public int Visitors { get; set; }
     }
 }

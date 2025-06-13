@@ -1,21 +1,39 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Howestprime.Movies.Domain.Enums;
+using Domaincrafters.Domain;
 
 namespace Howestprime.Movies.Domain.Entities
 {
-    public class MovieEvent
+    public sealed class MovieEventId : UuidEntityId
     {
-        public Guid Id { get; set; }
-        public Guid MovieId { get; set; }
-        public Guid RoomId { get; set; }
-        
-        // Change from Date + TimeSpan Time to single DateTime Time
-        public DateTime Time { get; set; }
-        
-        public int Capacity { get; set; }
-        public int Visitors { get; set; }
-        public List<Booking> Bookings { get; set; } = new List<Booking>();
+        public MovieEventId(string? id = "") : base(id)
+        {
+        }
+
+        public static MovieEventId CreateUnique()
+        {
+            return new MovieEventId(Guid.NewGuid().ToString());
+        }
+    }
+
+    public class MovieEvent : Entity<MovieEventId>
+    {
+        public MovieId MovieId { get; private set; }
+        public RoomId RoomId { get; private set; }
+        public DateTime Time { get; private set; }
+        public int Capacity { get; private set; }
+        public List<Booking> Bookings { get; private set; } = new List<Booking>();
+
+        public MovieEvent(MovieEventId id, MovieId movieId, RoomId roomId, DateTime time, int capacity)
+            : base(id)
+        {
+            MovieId = movieId;
+            RoomId = roomId;
+            Time = time;
+            Capacity = capacity;
+        }
         
         public Booking BookEvent(int standardVisitors, int discountVisitors, string roomName)
         {
@@ -24,10 +42,11 @@ namespace Howestprime.Movies.Domain.Entities
             int totalVisitors = standardVisitors + discountVisitors;
             if (totalVisitors <= 0)
                 throw new ArgumentException("Total visitor count must be greater than 0.");
-            if (Visitors + totalVisitors > Capacity)
+
+            var currentVisitors = Bookings.Sum(b => b.StandardVisitors + b.DiscountVisitors);
+            if (currentVisitors + totalVisitors > Capacity)
                 throw new InvalidOperationException("Cannot book more visitors than room capacity.");
                 
-            // Use Time directly since it's now a DateTime
             if ((Time - DateTime.UtcNow).TotalDays > 14)
                 throw new InvalidOperationException("Movie event can only be booked within 14 days.");
 
@@ -36,23 +55,27 @@ namespace Howestprime.Movies.Domain.Entities
 
             var seatNumbers = new List<int>();
             for (int i = 1; i <= totalVisitors; i++)
-                seatNumbers.Add(Visitors + i);
+                seatNumbers.Add(currentVisitors + i);
 
-            var booking = new Booking
-            {
-                Id = Guid.NewGuid(),
-                StandardVisitors = standardVisitors,
-                DiscountVisitors = discountVisitors,
-                Status = BookingStatus.Open,
-                PaymentStatus = PaymentStatus.Pending,
-                SeatNumbers = seatNumbers,
-                RoomName = roomName,
-                CreatedAt = DateTime.UtcNow
-            };
+            var booking = new Booking(
+                new BookingId(),
+                standardVisitors,
+                discountVisitors,
+                BookingStatus.Open,
+                PaymentStatus.Pending,
+                seatNumbers,
+                roomName,
+                DateTime.UtcNow
+            );
             Bookings.Add(booking);
-            Visitors += totalVisitors;
 
             return booking;
+        }
+
+        public override void ValidateState()
+        {
+            if (Capacity <= 0)
+                throw new InvalidOperationException("Capacity must be greater than 0.");
         }
     }
 }

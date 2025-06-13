@@ -1,9 +1,9 @@
-using System;
+using Howestprime.Movies.Domain.Entities;
 
 namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent
 {
     public class ScheduleMovieEventResult
     {
-        public Guid EventId { get; set; }
+        public required MovieEventId MovieEventId { get; set; }
     }
 }

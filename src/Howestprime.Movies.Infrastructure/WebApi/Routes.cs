@@ -27,13 +27,6 @@ public static class Routes
     {
         MapMovieRoutes(app);
         MapMovieEventRoutes(app);
-        
-        // Add root route redirect to swagger
-        app.MapGet("/", ctx => {
-            ctx.Response.Redirect("/swagger");
-            return Task.CompletedTask;
-        });
-        
         return app;
     }
 

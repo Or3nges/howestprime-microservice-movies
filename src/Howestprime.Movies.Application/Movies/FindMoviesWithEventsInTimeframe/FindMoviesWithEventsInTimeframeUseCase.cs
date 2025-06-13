@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Shared;
+using Howestprime.Movies.Domain.Entities;
 
 namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
 {
@@ -25,48 +26,65 @@ namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
 
         public async Task<MoviesWithEventsResponse> ExecuteAsync(FindMoviesWithEventsInTimeframeQuery query)
         {
-            if (query == null)
-                return new MoviesWithEventsResponse { Data = new List<MovieData>() };
 
-            var today = DateTime.UtcNow.Date;
-            var end = today.AddDays(14);
-            var movies = await _movieRepository.FindByFiltersAsync(query.Title, query.Genre);
-            var result = new List<MovieData>();
-            foreach (var movie in movies)
+            var startDate = query.StartDate ?? DateTime.UtcNow;
+            var endDate = query.EndDate ?? startDate.AddDays(14);
+
+
+            startDate = DateTime.SpecifyKind(startDate, DateTimeKind.Utc);
+            endDate = DateTime.SpecifyKind(endDate, DateTimeKind.Utc);
+
+            var events = await _movieEventRepository.GetEventsInRangeAsync(startDate, endDate);
+            var movieIds = events.Select(e => e.MovieId).Distinct().ToList();
+            var movies = new List<MovieData>();
+
+            foreach (var movieId in movieIds)
             {
-                var events = await _movieEventRepository.GetEventsForMovieInRangeAsync(movie.Id, today, end);
-                if (events == null || !events.Any()) continue;
-                var eventDatas = new List<MovieEventData>();
-                foreach (var ev in events)
+                var movie = await _movieRepository.GetByIdAsync(movieId);
+                if (movie == null) continue;
+
+                var movieEvents = events.Where(e => e.MovieId.Equals(movieId)).ToList();
+                var movieEventDatas = new List<MovieEventData>();
+
+                foreach (var evt in movieEvents)
                 {
-                    var room = await _roomRepository.GetByIdAsync(ev.RoomId);
+                    var room = await _roomRepository.GetByIdAsync(evt.RoomId);
                     if (room == null) continue;
-                    
-                    // Use Time directly since it's now a DateTime
-                    DateTime eventDateTime = DateTime.SpecifyKind(ev.Time, DateTimeKind.Utc);
-                    
-                    eventDatas.Add(new MovieEventData
+
+
+                    var eventTime = DateTime.SpecifyKind(evt.Time, DateTimeKind.Utc);
+
+                    movieEventDatas.Add(new MovieEventData
                     {
-                        Id = ev.Id,
-                        DateTime = eventDateTime,
-                        Room = new RoomData { Id = room.Id, Name = room.Name, Capacity = room.Capacity },
-                        Capacity = ev.Capacity,
-                        Visitors = ev.Visitors
+                        Id = evt.Id.Value,
+                        Time = eventTime,
+                        MovieId = evt.MovieId.Value,
+                        Capacity = evt.Capacity,
+                        Room = new RoomData
+                        {
+                            Id = room.Id.Value,
+                            Name = room.Name,
+                            Capacity = room.Capacity
+                        }
                     });
                 }
-                result.Add(new MovieData
+
+                movies.Add(new MovieData
                 {
-                    Id = movie.Id,
+                    Id = movie.Id.Value,
                     Title = movie.Title,
-                    Genres = movie.Genre,
+                    Description = movie.Description,
+                    Year = movie.Year,
+                    Genre = movie.Genre,
                     Actors = movie.Actors,
-                    AgeRating = movie.AgeRating,
+                    AgeRating = int.Parse(movie.AgeRating),
                     Duration = movie.Duration,
                     PosterUrl = movie.PosterUrl,
-                    Events = eventDatas
+                    Events = movieEventDatas
                 });
             }
-            return new MoviesWithEventsResponse { Data = result };
+
+            return new MoviesWithEventsResponse { Data = movies };
         }
     }
 

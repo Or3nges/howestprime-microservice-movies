@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Shared;
+using Howestprime.Movies.Domain.Entities;
 
 namespace Howestprime.Movies.Application.Movies.FindMovieEventsForMonth
 {
@@ -23,51 +23,40 @@ namespace Howestprime.Movies.Application.Movies.FindMovieEventsForMonth
             _roomRepository = roomRepository;
         }
 
-        public async Task<ScheduledMovieEventsResponse> ExecuteAsync(FindMovieEventsForMonthQuery query)
+        public async Task<List<MovieEventData>> ExecuteAsync(FindMovieEventsForMonthQuery query)
         {
-            if (query.Month < 1 || query.Month > 12 || query.Year < 1)
-                return new ScheduledMovieEventsResponse { Data = new List<ExtendedMovieEventData>() };
 
-            var start = new DateTime(query.Year, query.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-            var end = start.AddMonths(1).AddTicks(-1);
-            var events = await _movieEventRepository.GetEventsInRangeAsync(start, end);
-            var result = new List<ExtendedMovieEventData>();
-            
-            foreach (var ev in events)
+            var startDate = new DateTime(query.Year, query.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var endDate = startDate.AddMonths(1).AddTicks(-1); // Last moment of the last day of the month
+
+
+            var events = await _movieEventRepository.GetEventsInRangeAsync(startDate, endDate);
+            var eventDatas = new List<MovieEventData>();
+
+            foreach (var evt in events)
             {
-                var movie = await _movieRepository.GetByIdAsync(ev.MovieId);
-                var room = await _roomRepository.GetByIdAsync(ev.RoomId);
-                
-                if (movie == null || room == null) continue;
-                
-                // Use Time directly since it's now a DateTime
-                DateTime eventDateTime = DateTime.SpecifyKind(ev.Time, DateTimeKind.Utc);
-                
-                result.Add(new ExtendedMovieEventData
+                var movie = await _movieRepository.GetByIdAsync(evt.MovieId);
+                if (movie == null) continue;
+
+                var room = await _roomRepository.GetByIdAsync(evt.RoomId);
+                if (room == null) continue;
+
+                eventDatas.Add(new MovieEventData
                 {
-                    Id = ev.Id,
-                    Time = eventDateTime,
-                    Room = new RoomData 
-                    { 
-                        Id = room.Id, 
-                        Name = room.Name, 
-                        Capacity = room.Capacity 
-                    },
-                    Movie = new MovieData
+                    Id = evt.Id.Value,
+                    Time = evt.Time,
+                    MovieId = evt.MovieId.Value,
+                    Capacity = evt.Capacity,
+                    Room = new RoomData
                     {
-                        Id = movie.Id,
-                        Title = movie.Title,
-                        Genres = movie.Genre,
-                        Actors = movie.Actors,
-                        AgeRating = movie.AgeRating.ToString(),
-                        Duration = movie.Duration,
-                        PosterUrl = movie.PosterUrl
-                    },
-                    Capacity = ev.Capacity
+                        Id = room.Id.Value,
+                        Name = room.Name,
+                        Capacity = room.Capacity
+                    }
                 });
             }
-            
-            return new ScheduledMovieEventsResponse { Data = result };
+
+            return eventDatas;
         }
     }
 

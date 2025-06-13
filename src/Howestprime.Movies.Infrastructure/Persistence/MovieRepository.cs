@@ -11,12 +11,30 @@ namespace Howestprime.Movies.Infrastructure.Persistence
 {
     public class MovieRepository : IMovieRepository
     {
-        private static readonly ConcurrentDictionary<Guid, Movie> _movies = new();
+        private static readonly ConcurrentDictionary<MovieId, Movie> _movies = new();
 
-        public Task<Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public Task<Movie?> GetByIdAsync(MovieId id, CancellationToken cancellationToken = default)
         {
             _movies.TryGetValue(id, out var movie);
             return Task.FromResult(movie);
+        }
+
+        public Task<Movie?> ById(MovieId id)
+        {
+            _movies.TryGetValue(id, out var movie);
+            return Task.FromResult(movie);
+        }
+
+        public Task Save(Movie movie)
+        {
+            _movies[movie.Id] = movie;
+            return Task.CompletedTask;
+        }
+
+        public Task Remove(Movie movie)
+        {
+            _movies.TryRemove(movie.Id, out _);
+            return Task.CompletedTask;
         }
 
         public Task<Movie> AddAsync(Movie movie, CancellationToken cancellationToken = default)

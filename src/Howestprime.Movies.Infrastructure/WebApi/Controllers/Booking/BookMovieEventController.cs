@@ -10,7 +10,7 @@ public static class BookMovieEventController
         BookMovieEventCommand command,
         BookMovieEventHandler handler)
     {
-        command.MovieEventId = movieEventId;
+        command.MovieEventId = new Howestprime.Movies.Domain.Entities.MovieEventId(movieEventId.ToString());
         
         var result = await handler.HandleAsync(command);
         

@@ -2,7 +2,7 @@
   servers:
     # Added by API Auto Mocking Plugin
     - description: SwaggerHub API Auto Mocking
-      url: https://127.0.0.1:8000/
+      url: http://127.0.0.1:8000/
   info:
     description: This is a simple API
     version: "1.0.0"

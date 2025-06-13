@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Howestprime.Movies.Application.Contracts.Ports;
+using Howestprime.Movies.Domain.Entities;
 using Howestprime.Movies.Domain.Shared;
+using Howestprime.Movies.Application.Contracts.Ports;
 
 namespace Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents
 {
@@ -25,45 +26,56 @@ namespace Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents
 
         public async Task<MovieData> ExecuteAsync(FindMovieByIdWithEventsQuery query)
         {
-            var movie = await _movieRepository.ById(query.MovieId);
+            return await HandleAsync(query);
+        }
+
+        public async Task<MovieData> HandleAsync(FindMovieByIdWithEventsQuery query)
+        {
+            var movie = await _movieRepository.GetByIdAsync(query.MovieId);
             if (movie == null)
-                throw new Exception("Movie not found");
+                throw new InvalidOperationException("Movie not found.");
 
-            var today = DateTime.UtcNow.Date;
-            var end = today.AddDays(14);
-            var events = await _movieEventRepository.GetEventsForMovieInRangeAsync(query.MovieId, today, end);
-            if (events == null || !events.Any())
-                throw new Exception("No events found for this movie in the next 14 days");
+            var events = await _movieEventRepository.GetEventsForMovieInRangeAsync(
+                query.MovieId,
+                DateTime.UtcNow,
+                DateTime.UtcNow.AddMonths(1));
 
-            var eventDatas = new List<MovieEventData>();
-            foreach (var ev in events)
+            var movieData = new MovieData
             {
-                var room = await _roomRepository.ById(ev.RoomId);
-                if (room == null) continue;
-                
-                DateTime eventDateTime = DateTime.SpecifyKind(ev.Time, DateTimeKind.Utc);
-                
-                eventDatas.Add(new MovieEventData
+                Id = movie.Id.Value,
+                Title = movie.Title,
+                Description = movie.Description,
+                Year = movie.Year,
+                Genre = movie.Genre,
+                Actors = movie.Actors,
+                AgeRating = int.Parse(movie.AgeRating),
+                Duration = movie.Duration,
+                PosterUrl = movie.PosterUrl,
+                Events = new List<MovieEventData>()
+            };
+
+            foreach (var evt in events)
+            {
+                var room = await _roomRepository.GetByIdAsync(evt.RoomId);
+                if (room == null)
+                    continue;
+
+                movieData.Events.Add(new MovieEventData
                 {
-                    Id = ev.Id,
-                    DateTime = eventDateTime,
-                    Room = new RoomData { Id = room.Id, Name = room.Name, Capacity = room.Capacity },
-                    Capacity = ev.Capacity,
-                    Visitors = ev.Visitors
+                    Id = evt.Id.Value,
+                    Time = evt.Time,
+                    MovieId = evt.MovieId.Value,
+                    Capacity = evt.Capacity,
+                    Room = new RoomData
+                    {
+                        Id = room.Id.Value,
+                        Name = room.Name,
+                        Capacity = room.Capacity
+                    }
                 });
             }
 
-            return new MovieData
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Genres = movie.Genre,
-                Actors = movie.Actors,
-                AgeRating = movie.AgeRating,
-                Duration = movie.Duration,
-                PosterUrl = movie.PosterUrl,
-                Events = eventDatas
-            };
+            return movieData;
         }
     }
 }

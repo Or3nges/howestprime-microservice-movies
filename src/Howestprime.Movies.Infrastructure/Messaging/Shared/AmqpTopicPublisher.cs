@@ -21,19 +21,27 @@ public sealed class AmqpTopicPublisher(
         string routingKey = RoutingKey(domainEvent);
 
         if (IsSubscribedTo(domainEvent))
+        {
+            // Log so we can trace event handling.
+            Console.WriteLine($"[AmqpTopicPublisher] Publishing {domainEvent.QualifiedEventName} to {_exchangeName}:{routingKey}");
+
             _amqpBroker.PublishOnTopic(
                 _exchangeName,
                 routingKey,
                  AmqpMessageConverter.Serialize(domainEvent, _contentType)
             );
+        }
     }
     public bool IsSubscribedTo(IDomainEvent domainEvent)
     {
         return _allowedTopics.Contains(RoutingKey(domainEvent));
     }
 
+    // Builds the routing-key according to the AsyncAPI specification.
+    // Example: exchangeName = "howestprime" & event = "MovieRegistered"  →
+    //           "howestprime.movies.MovieRegistered"
     private string RoutingKey(IDomainEvent domainEvent)
     {
-        return $"{_exchangeName}.{domainEvent.QualifiedEventName}";
+        return $"{_exchangeName}.movies.{domainEvent.QualifiedEventName}";
     }
 }

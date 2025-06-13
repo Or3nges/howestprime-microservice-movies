@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using Howestprime.Movies.Domain.Shared;
+using Howestprime.Movies.Domain.Entities;
 
 namespace UnitTests.Domain.Shared
 {
@@ -9,7 +10,7 @@ namespace UnitTests.Domain.Shared
         [Fact]
         public void RoomData_CanBeCreated_WithValidData()
         {
-            var id = Guid.NewGuid();
+            var id = new RoomId();
             var roomData = new RoomData
             {
                 Id = id,
@@ -25,7 +26,7 @@ namespace UnitTests.Domain.Shared
         public void RoomData_DefaultValues_AreCorrect()
         {
             var roomData = new RoomData();
-            Assert.Equal(Guid.Empty, roomData.Id);
+            Assert.Equal(new RoomId(), roomData.Id);
             Assert.Null(roomData.Name);
             Assert.Equal(0, roomData.Capacity);
         }

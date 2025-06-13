@@ -1,9 +1,10 @@
 using System;
+using Howestprime.Movies.Domain.Entities;
 
 namespace Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents
 {
     public class FindMovieByIdWithEventsQuery
     {
-        public Guid MovieId { get; set; }
+        public MovieId MovieId { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using Howestprime.Movies.Domain.Events;
 using Microsoft.Extensions.Logging;
 using Howestprime.Movies.Infrastructure.Messaging.Shared;
 using Howestprime.Movies.Infrastructure.Messaging.Shared.Contracts;
+using Howestprime.Movies.Infrastructure.Messaging.Shared.Messages;
 
 namespace Howestprime.Movies.Infrastructure.Messaging.Publishers;
 
@@ -20,12 +21,10 @@ public class MovieEventPublisher : IEventPublisher
 
     public async Task PublishAsync(BookingOpened bookingOpenedEvent)
     {
+        var message = AmqpMessageConverter.Serialize(bookingOpenedEvent);
 
-        var message = System.Text.Json.JsonSerializer.Serialize(bookingOpenedEvent);
-
-        string exchange = "howestprime";
-
-        string routingKey = "howestprime.movies.BookingOpened";
+        const string exchange = "howestprime";
+        const string routingKey = "howestprime.movies.BookingOpened";
         _logger.LogInformation("Publishing BookingOpened event to AMQP: {Message}", message);
         await _amqpBroker.PublishOnTopic(exchange, routingKey, message);
     }
