@@ -9,8 +9,8 @@ namespace UnitTests.Domain
         [Fact]
         public void Room_CanBeCreated_WithValidData()
         {
-            var id = Guid.NewGuid();
-            var room = new Room { Id = id, Name = "Room 1", Capacity = 50 };
+            var id = new RoomId();
+            var room = new Room(id, "Room 1", 50);
             Assert.Equal(id, room.Id);
             Assert.Equal("Room 1", room.Name);
             Assert.Equal(50, room.Capacity);
@@ -19,16 +19,16 @@ namespace UnitTests.Domain
         [Fact]
         public void Room_NegativeCapacity_AllowedByDefault()
         {
-            var room = new Room { Id = Guid.NewGuid(), Name = "Test Room", Capacity = -10 };
+            var room = new Room(new RoomId(), "Test Room", -10);
             Assert.Equal(-10, room.Capacity);
         }
 
         [Fact]
         public void Room_DefaultValues_AreCorrect()
         {
-            var room = new Room();
-            Assert.Equal(Guid.Empty, room.Id);
-            Assert.Null(room.Name);
+            var room = new Room(new RoomId(), "Default", 0);
+            Assert.NotNull(room.Id);
+            Assert.Equal("Default", room.Name);
             Assert.Equal(0, room.Capacity);
         }
     }

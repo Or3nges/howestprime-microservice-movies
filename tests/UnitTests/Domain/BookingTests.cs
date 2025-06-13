@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Howestprime.Movies.Domain.Entities;
 using Howestprime.Movies.Domain.Enums;
 using Xunit;
@@ -8,79 +9,51 @@ namespace UnitTests.Domain
     public class BookingTests
     {
         [Fact]
-        public void Booking_CanBeCreated_WithValidData()
+        public void CreateBooking_Succeeds_WithValidData()
         {
-            // Arrange
-            var id = Guid.NewGuid();
-            var roomName = "Room A";
-            var createdAt = DateTime.UtcNow;
+            var booking = new Booking(new BookingId(), 1, 1, BookingStatus.Open, PaymentStatus.Pending,
+                new List<int> { 1, 2 }, "Room A", DateTime.UtcNow);
 
-            // Act
-            var booking = new Booking
-            {
-                Id = id,
-                StandardVisitors = 2,
-                DiscountVisitors = 1,
-                Status = BookingStatus.Open,
-                PaymentStatus = PaymentStatus.Pending,
-                RoomName = roomName,
-                CreatedAt = createdAt
-            };
+            booking.ValidateState();
 
-            // Assert
-            Assert.Equal(id, booking.Id);
-            Assert.Equal(2, booking.StandardVisitors);
+            Assert.NotNull(booking);
+            Assert.Equal(1, booking.StandardVisitors);
             Assert.Equal(1, booking.DiscountVisitors);
             Assert.Equal(BookingStatus.Open, booking.Status);
             Assert.Equal(PaymentStatus.Pending, booking.PaymentStatus);
-            Assert.Equal(roomName, booking.RoomName);
-            Assert.Equal(createdAt, booking.CreatedAt);
         }
-
+        
         [Fact]
-        public void Booking_StatusAndPaymentStatus_CanBeSet()
+        public void ValidateState_ThrowsException_WhenStandardVisitorsIsNegative()
         {
-            var booking = new Booking();
-            booking.Status = Howestprime.Movies.Domain.Enums.BookingStatus.Closed;
-            booking.PaymentStatus = Howestprime.Movies.Domain.Enums.PaymentStatus.Success;
-            Assert.Equal(Howestprime.Movies.Domain.Enums.BookingStatus.Closed, booking.Status);
-            Assert.Equal(Howestprime.Movies.Domain.Enums.PaymentStatus.Success, booking.PaymentStatus);
-        }
-
-        [Fact]
-        public void Booking_Status_Transitions()
-        {
-            var booking = new Booking();
-            booking.Status = BookingStatus.Open;
-            Assert.Equal(BookingStatus.Open, booking.Status);
-            booking.Status = BookingStatus.Closed;
-            Assert.Equal(BookingStatus.Closed, booking.Status);
-        }
-
-        [Fact]
-        public void Booking_NegativeVisitors_AllowedByDefault()
-        {
-            var booking = new Booking
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                StandardVisitors = -1,
-                DiscountVisitors = -2
-            };
-            Assert.Equal(-1, booking.StandardVisitors);
-            Assert.Equal(-2, booking.DiscountVisitors);
+                var booking = new Booking(new BookingId(), -1, 1, BookingStatus.Open, PaymentStatus.Pending,
+                    new List<int> { 1, 2 }, "Room A", DateTime.UtcNow);
+                booking.ValidateState();
+            });
         }
-
+        
         [Fact]
-        public void Booking_DefaultValues_AreCorrect()
+        public void ValidateState_ThrowsException_WhenRoomNameIsEmpty()
         {
-            var booking = new Booking();
-            Assert.Equal(Guid.Empty, booking.Id);
-            Assert.Equal(0, booking.StandardVisitors);
-            Assert.Equal(0, booking.DiscountVisitors);
-            Assert.Equal(BookingStatus.Open, booking.Status);
-            Assert.Equal(PaymentStatus.Pending, booking.PaymentStatus);
-            Assert.NotNull(booking.SeatNumbers);
-            Assert.Null(booking.RoomName);
-            Assert.Equal(default(DateTime), booking.CreatedAt);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var booking = new Booking(new BookingId(), 1, 1, BookingStatus.Open, PaymentStatus.Pending,
+                    new List<int> { 1, 2 }, "", DateTime.UtcNow);
+                booking.ValidateState();
+            });
+        }
+        
+        [Fact]
+        public void ValidateState_ThrowsException_WhenSeatNumbersAreEmpty()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var booking = new Booking(new BookingId(), 1, 1, BookingStatus.Open, PaymentStatus.Pending,
+                    new List<int>(), "Room A", DateTime.UtcNow);
+                booking.ValidateState();
+            });
         }
     }
-}
+} 

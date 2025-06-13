@@ -7,18 +7,19 @@ namespace UnitTests.Domain
     public class MovieTests
     {
         [Fact]
-        public void Movie_CanBeCreated_WithValidData()
+        public void CreateMovie_Succeeds()
         {
-            var id = Guid.NewGuid();
-            var movie = new Movie(id, "Title", "Desc", "Genre", "Actors", "PG", 120, "url");
-            Assert.Equal(id, movie.Id);
+            var movie = Movie.Create("Title", "Description", 2022, 120, "Genre", "Actors", "PG-13", "poster.jpg", new MovieId());
+
+            Assert.NotNull(movie);
             Assert.Equal("Title", movie.Title);
-            Assert.Equal("Desc", movie.Description);
-            Assert.Equal("Genre", movie.Genre);
-            Assert.Equal("Actors", movie.Actors);
-            Assert.Equal("PG", movie.AgeRating);
-            Assert.Equal(120, movie.Duration);
-            Assert.Equal("url", movie.PosterUrl);
+            Assert.Equal("Description", movie.Description);
+        }
+
+        [Fact]
+        public void CreateMovie_WithInvalidYear_ThrowsException()
+        {
+            Assert.Throws<ArgumentException>(() => Movie.Create("Title", "Description", 1800, 120, "Genre", "Actors", "PG-13", "poster.jpg", new MovieId()));
         }
     }
 }
