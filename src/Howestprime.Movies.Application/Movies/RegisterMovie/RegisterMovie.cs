@@ -37,7 +37,6 @@ namespace Howestprime.Movies.Application
 
             await _movieRepository.Save(movie);
 
-            // Notify other services via domain event
             DomainEventPublisher.Instance.Publish(
                 MovieRegistered.Create(
                     movie.Id.Value,

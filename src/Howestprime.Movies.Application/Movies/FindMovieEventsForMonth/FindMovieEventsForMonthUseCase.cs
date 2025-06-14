@@ -29,7 +29,7 @@ namespace Howestprime.Movies.Application.Movies.FindMovieEventsForMonth
         {
 
             var startDate = new DateTime(query.Year, query.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-            var endDate = startDate.AddMonths(1).AddTicks(-1); // Last moment of the last day of the month
+            var endDate = startDate.AddMonths(1).AddTicks(-1);
 
 
             var events = await _movieEventRepository.GetEventsInRangeAsync(startDate, endDate);
