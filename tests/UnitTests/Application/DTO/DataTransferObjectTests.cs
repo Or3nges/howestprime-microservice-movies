@@ -72,5 +72,48 @@ namespace UnitTests.Application.DTO
             
             Assert.Equal(movieEventId, item.MovieEventId);
         }
+
+        [Fact]
+        public void ScheduledMovieEventsResponse_CanBeCreated()
+        {
+            var item = new Howestprime.Movies.Application.Movies.FindMovieEventsForMonth.ScheduledMovieEventsResponse
+            {
+                Data = new System.Collections.Generic.List<ExtendedMovieEventData>()
+            };
+
+            Assert.NotNull(item.Data);
+        }
+
+        [Fact]
+        public void FindMovieByIdResult_CanBeCreated()
+        {
+            var item = new Howestprime.Movies.Application.UseCases.Movies.FindMovieById.FindMovieByIdResult
+            {
+                Id = new MovieId(),
+                Title = "Test Movie",
+                Year = 2024
+            };
+
+            Assert.NotNull(item.Id);
+            Assert.Equal("Test Movie", item.Title);
+            Assert.Equal(2024, item.Year);
+        }
+
+        [Fact]
+        public void FindMovieByIdWithEventsResult_CanBeCreated()
+        {
+            var item = new Howestprime.Movies.Application.UseCases.Movies.FindMovieByIdWithEvents.FindMovieByIdWithEventsResult
+            {
+                Id = new MovieId(),
+                Title = "Test Movie",
+                Year = 2024,
+                Events = new System.Collections.Generic.List<MovieEventResultData>()
+            };
+
+            Assert.NotNull(item.Id);
+            Assert.Equal("Test Movie", item.Title);
+            Assert.Equal(2024, item.Year);
+            Assert.NotNull(item.Events);
+        }
     }
 } 
