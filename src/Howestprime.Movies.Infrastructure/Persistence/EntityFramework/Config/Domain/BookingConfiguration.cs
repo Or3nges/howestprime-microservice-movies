@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Booking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -13,6 +13,13 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
         public void Configure(EntityTypeBuilder<Booking> builder)
         {
             builder.HasKey(b => b.Id);
+            
+            // Configure relationship with MovieEvent
+            builder.HasOne(b => b.MovieEvent)
+                .WithMany(me => me.Bookings)
+                .HasForeignKey(b => b.MovieEventId)
+                .IsRequired();
+            
             builder.Property(b => b.StandardVisitors).IsRequired();
             builder.Property(b => b.DiscountVisitors).IsRequired();
             builder.Property(b => b.Status).IsRequired();

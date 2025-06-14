@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Booking;
+using System;
+using System.Linq;
 
 namespace Howestprime.Movies.Infrastructure.Persistence
 {

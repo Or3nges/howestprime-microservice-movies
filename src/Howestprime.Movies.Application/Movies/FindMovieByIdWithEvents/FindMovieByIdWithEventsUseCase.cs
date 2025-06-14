@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
 using Howestprime.Movies.Domain.Shared;
 using Howestprime.Movies.Application.Contracts.Ports;
 

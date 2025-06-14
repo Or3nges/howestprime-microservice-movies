@@ -1,7 +1,7 @@
 using Howestprime.Movies.Application.Movies.FindMovieEventsForMonth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.MovieEvent;
 
 namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
 

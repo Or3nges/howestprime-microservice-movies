@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.MovieEvent;
 using Howestprime.Movies.Domain.Shared;
 
 namespace Howestprime.Movies.Application.Movies.FindMovieEventsForMonth

@@ -1,6 +1,7 @@
 namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
 
 using Howestprime.Movies.Application.Movies.FindMovieById;
+using Howestprime.Movies.Domain.Movie;
 using Microsoft.AspNetCore.Http;
 
 public static class FindMovieByIdController
@@ -9,7 +10,7 @@ public static class FindMovieByIdController
         Guid id,
         FindMovieByIdUseCase useCase)
     {
-        var query = new MovieByIdQuery { Id = new Howestprime.Movies.Domain.Entities.MovieId(id.ToString()) };
+        var query = new MovieByIdQuery { Id = new MovieId(id.ToString()) };
         var movie = await useCase.ExecuteAsync(query);
         return movie != null ? Results.Ok(movie) : Results.NotFound();
     }

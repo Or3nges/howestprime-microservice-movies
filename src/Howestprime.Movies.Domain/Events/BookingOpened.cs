@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
 
 namespace Howestprime.Movies.Domain.Events
 {
@@ -15,7 +15,7 @@ namespace Howestprime.Movies.Domain.Events
         public List<int> SeatNumbers { get; }
 
         public BookingOpened(
-            Booking booking,
+            Domain.Booking.Booking booking,
             MovieId movieId,
             string roomName,
             DateTime time)

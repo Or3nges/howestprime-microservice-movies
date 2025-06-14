@@ -1,7 +1,7 @@
 using System;
 using Domaincrafters.Domain;
 
-namespace Howestprime.Movies.Domain.Entities
+namespace Howestprime.Movies.Domain.Room
 {
     public class Room : Entity<RoomId>
     {

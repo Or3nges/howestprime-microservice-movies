@@ -1,5 +1,6 @@
 using Howestprime.Movies.Application.Movies.BookMovieEvent;
 using Microsoft.AspNetCore.Http;
+using Howestprime.Movies.Domain.MovieEvent;
 
 namespace Howestprime.Movies.Infrastructure.WebApi.Controllers.Booking;
 
@@ -10,7 +11,7 @@ public static class BookMovieEventController
         BookMovieEventCommand command,
         BookMovieEventHandler handler)
     {
-        command.MovieEventId = new Howestprime.Movies.Domain.Entities.MovieEventId(movieEventId.ToString());
+        command.MovieEventId = new MovieEventId(movieEventId.ToString());
         
         var result = await handler.HandleAsync(command);
         

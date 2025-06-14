@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
+using Howestprime.Movies.Domain.Booking;
 using System;
 using System.Text.Json;
+using System.Collections.Generic;
 using Domaincrafters.Domain;
 
 namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
@@ -87,6 +91,17 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
                     .HasConversion(
                         v => v.Value,
                         v => new BookingId(v));
+                
+                entity.Property(e => e.MovieEventId)
+                    .HasConversion(
+                        v => v.Value,
+                        v => new MovieEventId(v));
+                
+                entity.HasOne(b => b.MovieEvent)
+                    .WithMany(me => me.Bookings)
+                    .HasForeignKey(b => b.MovieEventId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                
                 entity.Property(e => e.StandardVisitors).IsRequired();
                 entity.Property(e => e.DiscountVisitors).IsRequired();
                 entity.Property(e => e.Status).IsRequired();

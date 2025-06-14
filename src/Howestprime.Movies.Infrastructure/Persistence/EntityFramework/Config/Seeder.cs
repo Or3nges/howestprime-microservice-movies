@@ -3,7 +3,8 @@ using Howestprime.Movies.Domain.Facilities;
 using Howestprime.Movies.Domain.Movies;
 */
 using Microsoft.EntityFrameworkCore;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Room;
+using Howestprime.Movies.Domain.Movie;
 using Domaincrafters.Domain;
 
 namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Configurations;

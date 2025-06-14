@@ -2,7 +2,7 @@ namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
 
 using Howestprime.Movies.Application;
 using Howestprime.Movies.Application.Movies.RegisterMovie;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
 using Microsoft.AspNetCore.Http;
 
 public static class RegisterMovieController

@@ -1,212 +1,135 @@
 using System;
-using System.Collections.Generic;
 using Domaincrafters.Domain;
-using Howestprime.Movies.Domain.MovieEvent;
-using Howestprime.Movies.Domain.Shared; // For MoviesDomainEvent, if MovieRegistered is published here
-using Howestprime.Movies.Domain.Entities;
-using Howestprime.Movies.Domain.Events;
 
-namespace Howestprime.Movies.Domain.Movie // Changed namespace
+namespace Howestprime.Movies.Domain.Movie
 {
+    public sealed class MovieId : UuidEntityId
+    {
+        public MovieId(string? id = "") : base(id)
+        {
+        }
+    }
 
-    public class Movie : Entity<MovieId> // Inherits from Entity<MovieId>
+    public class Movie : Entity<MovieId>
     {
         public string Title { get; private set; }
-        public string? Description { get; private set; }
+        public string Description { get; private set; }
         public int Year { get; private set; }
-        public string? Genre { get; private set; }
-        public int Duration { get; private set; }        public string? Actors { get; private set; }
-        public int AgeRating { get; private set; } // Changed from string? to int
-        public string? PosterUrl { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime UpdatedAt { get; private set; }
-        public List<Howestprime.Movies.Domain.MovieEvent.MovieEvent> Events { get; set; } = new List<Howestprime.Movies.Domain.MovieEvent.MovieEvent>();
+        public string Genre { get; private set; }
+        public string Actors { get; private set; }
+        public string AgeRating { get; private set; }
+        public int Duration { get; private set; }
+        public string PosterUrl { get; private set; }
 
-        // Private constructor
-        private Movie(MovieId id, string title, string? description, int year, string? genre, int duration, string? actors, int ageRating, string? posterUrl, DateTime createdAt, DateTime updatedAt) : base(id)
+        public Movie(MovieId id, string title, string description, int year, string genre, string actors, string ageRating, int duration, string posterUrl)
+            : base(id)
         {
             Title = title;
             Description = description;
             Year = year;
             Genre = genre;
-            Duration = duration;
             Actors = actors;
-            AgeRating = ageRating; // Changed
+            AgeRating = ageRating;
+            Duration = duration;
             PosterUrl = posterUrl;
-            CreatedAt = createdAt;
-            UpdatedAt = updatedAt;
         }
 
-        // Public static Create factory method
-        public static Movie Create(
-            string title, 
-            string? description, 
-            int year, 
-            string? genre, 
-            int duration, 
-            string? actors, 
-            int ageRating, // Changed from string? to int
-            string? posterUrl)        {
-            var id = new MovieId(Guid.NewGuid().ToString());
-            var now = DateTime.UtcNow;
-            var movie = new Movie(id, title, description, year, genre, duration, actors, ageRating, posterUrl, now, now); // Changed
-
+        public static Movie Create(string title, string description, int year, int duration, string genre, string actors, string ageRating, string posterUrl, MovieId? movieId = null)
+        {
+            Movie movie = new Movie(movieId ?? new MovieId(), title, description, year, genre, actors, ageRating, duration, posterUrl);
             movie.ValidateState();
-            
-            // Domain Event Publishing
-            DomainEventPublisher.Instance.Publish(
-                MovieRegistered.Create(
-                    movie.Id.Value,
-                    movie.Title,
-                    movie.Year,
-                    movie.Duration,
-                    movie.Genre,
-                    movie.Actors,
-                    movie.AgeRating, // Changed
-                    movie.PosterUrl));
-            
+
             return movie;
         }
 
-        public void UpdateDetails(
-            string title,
-            string? description,
-            int year,
-            string? genre,
-            int duration,
-            string? actors,
-            int ageRating, // Changed from string? to int
-            string? posterUrl)
-        {
-            Title = title;
-            Description = description;
-            Year = year;
-            Genre = genre;
-            Duration = duration;
-            Actors = actors;
-            AgeRating = ageRating; // Changed
-            PosterUrl = posterUrl;
-            UpdatedAt = DateTime.UtcNow;
-
-            ValidateState();
-            // Consider publishing a MovieDetailsChanged event, aligning with your spec
-            // DomainEventPublisher.Instance.Publish(MovieDetailsChanged.Create(...));
-        }
-
-        public override void ValidateState() // Renamed from ValidState
+        public override void ValidateState()
         {
             EnsureTitleIsValid(Title);
             EnsureDescriptionIsValid(Description);
             EnsureYearIsValid(Year);
-            EnsureGenreIsValid(Genre);
             EnsureDurationIsValid(Duration);
-            EnsureActorsAreValid(Actors); // Renamed for clarity
+            EnsureActorsIsValid(Actors);
             EnsureAgeRatingIsValid(AgeRating);
             EnsurePosterUrlIsValid(PosterUrl);
         }
 
         private static void EnsureTitleIsValid(string title)
         {
-            if (string.IsNullOrWhiteSpace(title))
+            if (string.IsNullOrEmpty(title))
             {
-                throw new ArgumentException("Title cannot be empty or whitespace.");
+                throw new ArgumentException("Title cannot be empty");
             }
-            if (title.Length > 250)
+            else if (title.Length > 250)
             {
-                throw new ArgumentException("Title cannot be longer than 250 characters.");
-            }
-        }
-
-        private static void EnsureDescriptionIsValid(string? description)
-        {
-            if (string.IsNullOrWhiteSpace(description))
-            {
-                throw new ArgumentException("Description cannot be empty or whitespace.");
-            }
-            if (description.Length > 1000) // Assuming a max length for description
-            {
-                throw new ArgumentException("Description cannot be longer than 1000 characters.");
+                throw new ArgumentException("Title cannot be longer than 250 characters");
             }
         }
 
-        private static void EnsureYearIsValid(int year) // Changed param type to int
+        private static void EnsureDescriptionIsValid(string description)
         {
-            if (year > DateTime.Now.Year + 5) // Allow a bit more future leeway, adjust as needed
+            if (string.IsNullOrEmpty(description))
             {
-                throw new ArgumentException($"Year cannot be more than {DateTime.Now.Year + 5}.");
+                throw new ArgumentException("Description cannot be empty");
             }
-            if (year < 1888) // Earliest known films
+            else if (description.Length > 500)
             {
-                throw new ArgumentException("Year cannot be less than 1888.");
+                throw new ArgumentException("Description cannot be longer than 500 characters");
             }
         }
-        
-        private static void EnsureGenreIsValid(string? genre)
+
+        private static void EnsureYearIsValid(int year)
         {
-            if (string.IsNullOrWhiteSpace(genre))
+            if (year > DateTime.Now.Year + 1)
             {
-                throw new ArgumentException("Genre cannot be empty or whitespace.");
+                throw new ArgumentException("Year can only be 1 year in the future");
             }
-            if (genre.Length > 100)
+            else if (year < 1990)
             {
-                throw new ArgumentException("Genre cannot be longer than 100 characters.");
+                throw new ArgumentException("Year cannot be less than 1990");
             }
         }
 
         private static void EnsureDurationIsValid(int duration)
         {
-            if (duration <= 0)
+            if (duration < 0)
             {
-                throw new ArgumentException("Duration must be positive.");
+                throw new ArgumentException("Duration cannot be negative");
             }
-            if (duration > 600) // e.g., 10 hours, adjust as needed
+            else if (duration > 300)
             {
-                throw new ArgumentException("Duration cannot be higher than 600 minutes.");
-            }
-        }
-
-        private static void EnsureActorsAreValid(string? actors) // Changed param type to string, method name
-        {
-            if (string.IsNullOrWhiteSpace(actors))
-            {
-                throw new ArgumentException("Actors cannot be empty or whitespace.");
-            }
-            if (actors.Length > 500) 
-            {
-                throw new ArgumentException("Actors list cannot be longer than 500 characters.");
+                throw new ArgumentException("Duration cannot be higher than 300 minutes");
             }
         }
 
-        private static void EnsureAgeRatingIsValid(int ageRating) // Changed from string to int
+        private static void EnsureActorsIsValid(string actors)
         {
-            // Assuming age rating must be non-negative. Adjust if specific values (e.g., 0, 6, 12, 15, 18) are required.
-            if (ageRating < 0)
+            if (string.IsNullOrEmpty(actors))
             {
-                throw new ArgumentOutOfRangeException(nameof(ageRating), "Age rating cannot be negative.");
+                throw new ArgumentException("Actors cannot be empty");
             }
-            // Example: if only specific ratings are allowed:
-            // var allowedRatings = new[] { 0, 6, 12, 15, 18 };
-            // if (!allowedRatings.Contains(ageRating))
-            // {
-            //     throw new ArgumentOutOfRangeException(nameof(ageRating), $"Invalid age rating. Allowed values are: {string.Join(", ", allowedRatings)}.");
-            // }
+            else if (actors.Length > 250)
+            {
+                throw new ArgumentException("Actors cannot be longer than 250 characters");
+            }
         }
-        
-        private static void EnsurePosterUrlIsValid(string? posterUrl)
+
+        private static void EnsureAgeRatingIsValid(string ageRating)
         {
-            if (string.IsNullOrWhiteSpace(posterUrl))
+            if (string.IsNullOrEmpty(ageRating))
             {
-                // Poster URL can be optional depending on requirements
-                // throw new ArgumentException("Poster URL cannot be empty or whitespace.");
-                return; 
+                throw new ArgumentException("AgeRating cannot be empty");
             }
-            if (!Uri.TryCreate(posterUrl, UriKind.Absolute, out _))
+            else if (ageRating.Length > 250)
             {
-                throw new ArgumentException("Poster URL must be a valid absolute URI.");
+                throw new ArgumentException("AgeRating cannot be longer than 250 characters");
             }
-            if (posterUrl.Length > 2048) // Standard URL length limit
+        }
+
+        private static void EnsurePosterUrlIsValid(string posterUrl)
+        {
+            if (string.IsNullOrEmpty(posterUrl))
             {
-                throw new ArgumentException("Poster URL cannot be longer than 2048 characters.");
+                throw new ArgumentException("PosterUrl cannot be empty");
             }
         }
     }

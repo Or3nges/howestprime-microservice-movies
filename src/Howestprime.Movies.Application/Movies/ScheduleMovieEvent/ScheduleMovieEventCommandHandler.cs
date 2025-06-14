@@ -1,4 +1,6 @@
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
 using Howestprime.Movies.Application.Contracts.Ports;
 
 namespace Howestprime.Movies.Application.Movies.ScheduleMovieEvent

@@ -1,7 +1,7 @@
 namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
 
 using Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

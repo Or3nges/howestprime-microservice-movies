@@ -1,5 +1,7 @@
+using System.Linq;
+using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
 
 namespace Howestprime.Movies.Application.Movies.FindMoviesByFilters
 {

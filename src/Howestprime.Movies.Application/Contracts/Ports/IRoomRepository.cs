@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Howestprime.Movies.Domain.Entities;
+using System.Collections.Generic;
 using Domaincrafters.Domain;
+using Howestprime.Movies.Domain.Room;
 
 namespace Howestprime.Movies.Application.Contracts.Ports
 {

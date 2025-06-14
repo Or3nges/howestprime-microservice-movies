@@ -1,6 +1,5 @@
 using System;
 using System.Text.Json.Serialization;
-using Howestprime.Movies.Domain.Entities;
 
 namespace Howestprime.Movies.Domain.Shared
 {

@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
 using Howestprime.Movies.Domain.Events;
 using Howestprime.Movies.Application.Contracts.Ports;
 

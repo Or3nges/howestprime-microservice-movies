@@ -1,6 +1,6 @@
 using System;
-using Howestprime.Movies.Domain.Entities;
-using Howestprime.Movies.Domain.MovieEvent; 
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
 
 namespace Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents
 {

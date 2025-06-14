@@ -1,4 +1,4 @@
-using Howestprime.Movies.Domain.Entities;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Howestprime.Movies.Domain.Shared

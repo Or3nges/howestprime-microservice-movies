@@ -1,7 +1,7 @@
 namespace Howestprime.Movies.Infrastructure.WebApi.Controllers;
 
 using Howestprime.Movies.Application.Movies.ScheduleMovieEvent;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.MovieEvent;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 

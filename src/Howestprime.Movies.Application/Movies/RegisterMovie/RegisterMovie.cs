@@ -1,6 +1,6 @@
 using Howestprime.Movies.Application.Contracts.Data;
 using Howestprime.Movies.Application.Contracts.Ports;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
 using Howestprime.Movies.Application.Movies.RegisterMovie;
 using Domaincrafters.Domain;
 using Howestprime.Movies.Domain.Events;

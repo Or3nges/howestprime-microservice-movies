@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents;
-using Howestprime.Movies.Domain.Entities;
 using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Domain.MovieEvent;
 
 namespace Howestprime.Movies.Application.UseCases.Movies.FindMovieByIdWithEvents
 {

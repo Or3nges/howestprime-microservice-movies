@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Howestprime.Movies.Domain.Enums;
+using Howestprime.Movies.Domain.MovieEvent;
 using Domaincrafters.Domain;
 
-namespace Howestprime.Movies.Domain.Entities
+namespace Howestprime.Movies.Domain.Booking
 {
     public sealed class BookingId : UuidEntityId
     {
@@ -12,20 +13,31 @@ namespace Howestprime.Movies.Domain.Entities
         }
     }
 
+    public enum BookingStatus
+    {
+        Open,
+        Closed
+    }
+
     public class Booking : Entity<BookingId>
     {
-        public int StandardVisitors { get; private set; }
+        public MovieEventId MovieEventId { get; private set; }
+        public MovieEvent.MovieEvent MovieEvent { get; private set; }
         public int DiscountVisitors { get; private set; }
+        public int StandardVisitors { get; private set; }
         public BookingStatus Status { get; private set; }
         public PaymentStatus PaymentStatus { get; private set; }
         public List<int> SeatNumbers { get; private set; }
         public string RoomName { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
+        protected Booking() : base(new BookingId()) { }
+
         public Booking(
             BookingId id,
-            int standardVisitors,
+            MovieEventId movieEventId,
             int discountVisitors,
+            int standardVisitors,
             BookingStatus status,
             PaymentStatus paymentStatus,
             List<int> seatNumbers,
@@ -33,8 +45,9 @@ namespace Howestprime.Movies.Domain.Entities
             DateTime createdAt)
             : base(id)
         {
-            StandardVisitors = standardVisitors;
+            MovieEventId = movieEventId;
             DiscountVisitors = discountVisitors;
+            StandardVisitors = standardVisitors;
             Status = status;
             PaymentStatus = paymentStatus;
             SeatNumbers = seatNumbers;

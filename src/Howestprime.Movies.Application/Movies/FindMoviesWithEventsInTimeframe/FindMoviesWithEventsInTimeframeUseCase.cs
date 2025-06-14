@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Shared;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
 
 namespace Howestprime.Movies.Application.Movies.FindMoviesWithEventsInTimeframe
 {

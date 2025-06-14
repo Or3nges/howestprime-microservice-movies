@@ -1,4 +1,4 @@
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Booking;
 
 namespace Howestprime.Movies.Application.Movies.BookMovieEvent
 {
