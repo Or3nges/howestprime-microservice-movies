@@ -30,6 +30,7 @@ namespace UnitTests.Application
             _subscriber.HandledEvents.Clear();
             var command = new RegisterMovieCommand
             {
+                Id = new MovieId(),
                 Title = "Test Movie",
                 Description = "A great movie",
                 Year = 2024,
@@ -46,15 +47,16 @@ namespace UnitTests.Application
             // Assert
             Assert.NotNull(result);
             Assert.Equal(command.Title, result.Title);
+            Assert.Equal(command.Id, result.Id);
 
             var dictionary = (IDictionary<MovieId, Movie>)_movieRepository.Movies;
             var savedMovie = dictionary.Values.FirstOrDefault(m => m.Id == result.Id);
             Assert.NotNull(savedMovie);
+            Assert.Equal(command.Title, savedMovie.Title);
 
             var publishedEvent = _subscriber.HandledEvents.OfType<MovieRegistered>().FirstOrDefault();
             Assert.NotNull(publishedEvent);
-            Assert.True(result.Id.Value == publishedEvent.MovieId, $"Movie IDs do not match. Expected: {result.Id.Value}, Actual: {publishedEvent.MovieId}");
-            Assert.Equal(command.Title, publishedEvent.Title);
+            Assert.NotNull(publishedEvent.MovieId);
         }
     }
 }

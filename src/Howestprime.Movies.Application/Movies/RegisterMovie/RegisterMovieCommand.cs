@@ -1,7 +1,10 @@
+using Howestprime.Movies.Domain.Movie;
+
 namespace Howestprime.Movies.Application.Movies.RegisterMovie
 {
     public class RegisterMovieCommand
     {
+        public MovieId Id { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? Genre { get; set; }

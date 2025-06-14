@@ -17,7 +17,7 @@ public class RegisterMovieCommandHandler
     public virtual async Task<Movie> Handle(RegisterMovieCommand command)
     {
         var movie = new Movie(
-            new MovieId(),
+            command.Id,
             command.Title ?? "Untitled",
             command.Description ?? string.Empty,
             command.Year,
