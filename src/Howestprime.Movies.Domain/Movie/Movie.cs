@@ -48,6 +48,7 @@ namespace Howestprime.Movies.Domain.Movie
             EnsureDescriptionIsValid(Description);
             EnsureYearIsValid(Year);
             EnsureDurationIsValid(Duration);
+            EnsureGenreIsValid(Genre);
             EnsureActorsIsValid(Actors);
             EnsureAgeRatingIsValid(AgeRating);
             EnsurePosterUrlIsValid(PosterUrl);
@@ -98,6 +99,18 @@ namespace Howestprime.Movies.Domain.Movie
             else if (duration > 300)
             {
                 throw new ArgumentException("Duration cannot be higher than 300 minutes");
+            }
+        }
+
+        private static void EnsureGenreIsValid(string genre)
+        {
+            if (string.IsNullOrEmpty(genre))
+            {
+                throw new ArgumentException("Genre cannot be empty");
+            }
+            else if (genre.Length > 250)
+            {
+                throw new ArgumentException("Genre cannot be longer than 250 characters");
             }
         }
 

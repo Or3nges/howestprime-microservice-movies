@@ -31,10 +31,17 @@ namespace Howestprime.Movies.Domain.MovieEvent
         public MovieEvent(MovieEventId id, MovieId movieId, RoomId roomId, DateTime time, int capacity)
             : base(id)
         {
+            if (capacity <= 0)
+                throw new ArgumentException("Capacity must be greater than 0.");
+
+            if (time < DateTime.UtcNow)
+                throw new ArgumentException("Movie event cannot be scheduled in the past.");
+
             MovieId = movieId;
             RoomId = roomId;
             Time = time;
             Capacity = capacity;
+            ValidateState();
         }
         
         public Domain.Booking.Booking BookEvent(int standardVisitors, int discountVisitors, string roomName)

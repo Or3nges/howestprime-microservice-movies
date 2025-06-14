@@ -12,22 +12,29 @@ namespace UnitTests.Shared
 {
     public class FakeMovieRepository : IMovieRepository
     {
-        public List<Movie> Movies { get; set; } = new List<Movie>();
+        private readonly List<Movie> _movies = new();
+        public IReadOnlyList<Movie> Movies => _movies;
+
+        public void SetTestData(IEnumerable<Movie> movies)
+        {
+            _movies.Clear();
+            _movies.AddRange(movies);
+        }
 
         public Task<Movie?> GetByIdAsync(MovieId id, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(Movies.FirstOrDefault(m => m.Id == id));
+            return Task.FromResult(_movies.FirstOrDefault(m => m.Id == id));
         }
 
         public Task<Movie> AddAsync(Movie movie, CancellationToken cancellationToken = default)
         {
-            Movies.Add(movie);
+            _movies.Add(movie);
             return Task.FromResult(movie);
         }
 
         public Task<IEnumerable<Movie>> FindByFiltersAsync(string? title, string? genre, CancellationToken cancellationToken = default)
         {
-            var result = Movies.AsEnumerable();
+            var result = _movies.AsEnumerable();
             if (!string.IsNullOrEmpty(title))
             {
                 result = result.Where(m => m.Title.Contains(title, StringComparison.InvariantCultureIgnoreCase));
@@ -36,96 +43,116 @@ namespace UnitTests.Shared
             {
                 result = result.Where(m => m.Genre.Equals(genre, StringComparison.InvariantCultureIgnoreCase));
             }
-            return Task.FromResult(result.ToList() as IEnumerable<Movie>);
+            return Task.FromResult(result);
         }
 
         public Task<Movie?> ById(MovieId id)
         {
-            return Task.FromResult(Movies.FirstOrDefault(m => m.Id == id));
+            return Task.FromResult(_movies.FirstOrDefault(m => m.Id == id));
         }
 
         public Task Save(Movie movie)
         {
+            var existing = _movies.FirstOrDefault(m => m.Id == movie.Id);
+            if (existing != null)
+            {
+                _movies.Remove(existing);
+            }
+            _movies.Add(movie);
             return Task.CompletedTask;
         }
 
         public Task Remove(Movie movie)
         {
-             Movies.Remove(movie);
+            _movies.Remove(movie);
             return Task.CompletedTask;
         }
     }
 
     public class FakeMovieEventRepository : IMovieEventRepository
     {
-        public List<MovieEvent> Events { get; set; } = new List<MovieEvent>();
+        private readonly List<MovieEvent> _events = new();
+        public IReadOnlyList<MovieEvent> Events => _events;
+
+        public void SetTestData(IEnumerable<MovieEvent> events)
+        {
+            _events.Clear();
+            _events.AddRange(events);
+        }
 
         public Task AddAsync(MovieEvent movieEvent)
         {
-            Events.Add(movieEvent);
+            _events.Add(movieEvent);
             return Task.CompletedTask;
         }
 
         public Task DeleteAsync(MovieEventId id)
         {
-            Events.RemoveAll(e => e.Id == id);
+            _events.RemoveAll(e => e.Id == id);
             return Task.CompletedTask;
         }
 
         public Task<MovieEvent> GetByIdWithBookingsAsync(MovieEventId movieEventId)
         {
-            return Task.FromResult(Events.FirstOrDefault(e => e.Id == movieEventId)!);
+            return Task.FromResult(_events.FirstOrDefault(e => e.Id == movieEventId)!);
         }
 
         public Task<IEnumerable<MovieEvent>> GetEventsForMovieInRangeAsync(MovieId movieId, DateTime start, DateTime end)
         {
-            return Task.FromResult(Events.Where(e => e.MovieId == movieId && e.Time >= start && e.Time <= end));
+            return Task.FromResult(_events.Where(e => e.MovieId == movieId && e.Time >= start && e.Time <= end));
         }
 
         public Task<MovieEvent?> GetByRoomDateTimeAsync(RoomId roomId, DateTime date, TimeSpan time)
         {
-            return Task.FromResult(Events.FirstOrDefault(e => e.RoomId == roomId && e.Time.Date == date.Date && e.Time.TimeOfDay == time));
+            return Task.FromResult(_events.FirstOrDefault(e => e.RoomId == roomId && e.Time.Date == date.Date && e.Time.TimeOfDay == time));
         }
         
         public Task UpdateAsync(MovieEvent movieEvent)
         {
-            var index = Events.FindIndex(e => e.Id == movieEvent.Id);
+            var index = _events.FindIndex(e => e.Id == movieEvent.Id);
             if (index != -1)
             {
-                Events[index] = movieEvent;
+                _events[index] = movieEvent;
             }
             return Task.CompletedTask;
         }
 
         public Task<IEnumerable<MovieEvent>> GetEventsInRangeAsync(DateTime start, DateTime end)
         {
-            return Task.FromResult(Events.Where(e => e.Time >= start && e.Time <= end));
+            return Task.FromResult(_events.Where(e => e.Time >= start && e.Time <= end));
         }
     }
 
     public class FakeRoomRepository : IRoomRepository
     {
-        public List<Room> Rooms { get; set; } = new List<Room>();
+        private readonly List<Room> _rooms = new();
+        public IReadOnlyList<Room> Rooms => _rooms;
+
+        public void SetTestData(IEnumerable<Room> rooms)
+        {
+            _rooms.Clear();
+            _rooms.AddRange(rooms);
+        }
 
         public Task<Room> AddAsync(Room room)
         {
-            Rooms.Add(room);
+            _rooms.Add(room);
             return Task.FromResult(room);
         }
 
         public Task<Room?> ById(RoomId id)
         {
-            return Task.FromResult(Rooms.FirstOrDefault(r => r.Id == id));
+            return Task.FromResult(_rooms.FirstOrDefault(r => r.Id == id));
         }
 
         public Task<IEnumerable<Room>> GetAllAsync()
         {
-            return Task.FromResult(Rooms.AsEnumerable());
+            return Task.FromResult(_rooms.AsEnumerable());
         }
 
         public Task<Room?> GetByIdAsync(RoomId id)
         {
-            return Task.FromResult(Rooms.FirstOrDefault(r => r.Id == id));
+            return Task.FromResult(_rooms.FirstOrDefault(r => r.Id == id));
         }
         
         public Task SeedRoomsAsync()

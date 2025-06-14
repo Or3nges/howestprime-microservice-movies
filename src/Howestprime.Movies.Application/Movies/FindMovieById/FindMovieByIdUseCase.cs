@@ -6,6 +6,7 @@ using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Shared;
 using Howestprime.Movies.Domain.MovieEvent;
 using System.Collections.Generic;
+using Howestprime.Movies.Domain.Shared.Exceptions;
 
 namespace Howestprime.Movies.Application.Movies.FindMovieById
 {
@@ -21,7 +22,7 @@ namespace Howestprime.Movies.Application.Movies.FindMovieById
         {
             var movie = await _movieRepository.GetByIdAsync(query.Id);
             if (movie == null)
-                throw new Exception($"Movie with id {query.Id} not found");
+                throw new NotFoundException($"Movie with id {query.Id} not found");
             return new MovieData
             {
                 Id = movie.Id.Value,
