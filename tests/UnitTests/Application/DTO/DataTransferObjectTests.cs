@@ -91,29 +91,52 @@ namespace UnitTests.Application.DTO
             {
                 Id = new MovieId(),
                 Title = "Test Movie",
-                Year = 2024
+                Year = 2024,
+                PosterUrl = "http://example.com/poster.jpg",
+                Genre = "Action",
+                AgeRating = 12,
+                Duration = 120,
+                Actors = "John Doe",
+                Description = "A great movie"
             };
 
             Assert.NotNull(item.Id);
             Assert.Equal("Test Movie", item.Title);
             Assert.Equal(2024, item.Year);
+            Assert.Equal("http://example.com/poster.jpg", item.PosterUrl);
+            Assert.Equal("Action", item.Genre);
+            Assert.Equal(12, item.AgeRating);
+            Assert.Equal(120, item.Duration);
+            Assert.Equal("John Doe", item.Actors);
+            Assert.Equal("A great movie", item.Description);
         }
 
         [Fact]
         public void FindMovieByIdWithEventsResult_CanBeCreated()
         {
+            var now = DateTime.UtcNow;
             var item = new Howestprime.Movies.Application.UseCases.Movies.FindMovieByIdWithEvents.FindMovieByIdWithEventsResult
             {
                 Id = new MovieId(),
                 Title = "Test Movie",
                 Year = 2024,
-                Events = new System.Collections.Generic.List<MovieEventResultData>()
+                Events = new System.Collections.Generic.List<MovieEventResultData>(),
+                Duration = 120,
+                PosterUrl = "http://example.com/poster.jpg",
+                AgeRating = 12,
+                CreatedAt = now,
+                UpdatedAt = now
             };
 
             Assert.NotNull(item.Id);
             Assert.Equal("Test Movie", item.Title);
             Assert.Equal(2024, item.Year);
             Assert.NotNull(item.Events);
+            Assert.Equal(120, item.Duration);
+            Assert.Equal("http://example.com/poster.jpg", item.PosterUrl);
+            Assert.Equal(12, item.AgeRating);
+            Assert.Equal(now, item.CreatedAt);
+            Assert.Equal(now, item.UpdatedAt);
         }
     }
 } 
