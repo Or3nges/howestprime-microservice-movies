@@ -4,6 +4,9 @@ using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework;
 using Howestprime.Movies.Infrastructure.Persistence.EntityFramework.Repositories;
+using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
 using Howestprime.Movies.Application.Contracts.Ports;
 
 namespace Howestprime.Movies.Main.Modules.Persistence;

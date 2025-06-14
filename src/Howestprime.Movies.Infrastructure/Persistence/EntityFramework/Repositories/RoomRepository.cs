@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Room;
 using Microsoft.EntityFrameworkCore;
 using Domaincrafters.Domain;

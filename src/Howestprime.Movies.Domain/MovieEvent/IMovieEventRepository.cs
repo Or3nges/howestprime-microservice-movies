@@ -5,7 +5,7 @@ using Howestprime.Movies.Domain.MovieEvent;
 using Howestprime.Movies.Domain.Room;
 using System.Collections.Generic;
 
-namespace Howestprime.Movies.Application.Contracts.Ports
+namespace Howestprime.Movies.Domain.MovieEvent
 {
     public interface IMovieEventRepository
     {

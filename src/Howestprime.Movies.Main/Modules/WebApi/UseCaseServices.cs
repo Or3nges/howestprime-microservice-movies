@@ -12,6 +12,8 @@ using Howestprime.Movies.Application.Movies.BookMovieEvent;
 using Howestprime.Movies.Infrastructure.Messaging.Shared;
 using Howestprime.Movies.Infrastructure.Messaging.Publishers;
 using Howestprime.Movies.Application.Contracts.Ports;
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
 
 public static class UseCaseServices
 {

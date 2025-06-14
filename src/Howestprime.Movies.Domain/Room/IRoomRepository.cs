@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Domaincrafters.Domain;
 using Howestprime.Movies.Domain.Room;
 
-namespace Howestprime.Movies.Application.Contracts.Ports
+namespace Howestprime.Movies.Domain.Room
 {
     public interface IRoomRepository
     {

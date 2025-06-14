@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Movie;
 using Microsoft.EntityFrameworkCore;
 
