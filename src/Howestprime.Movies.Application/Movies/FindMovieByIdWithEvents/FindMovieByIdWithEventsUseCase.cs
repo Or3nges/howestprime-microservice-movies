@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Howestprime.Movies.Domain.Movie;
 using Howestprime.Movies.Domain.MovieEvent;
 using Howestprime.Movies.Domain.Room;
-using Howestprime.Movies.Domain.Shared;
+using Howestprime.Movies.Application.Contracts.Data;
 using Howestprime.Movies.Application.Contracts.Ports;
 
 namespace Howestprime.Movies.Application.Movies.FindMovieByIdWithEvents

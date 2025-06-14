@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Howestprime.Movies.Application.Contracts.Data;
 
-namespace Howestprime.Movies.Domain.Shared
+namespace Howestprime.Movies.Application.Contracts.Data
 {
     public class MovieData
     {

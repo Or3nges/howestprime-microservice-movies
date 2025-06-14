@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Howestprime.Movies.Application.Movies.FindMovieEventsForMonth;
-using Howestprime.Movies.Domain.Shared;
+using Howestprime.Movies.Application.Contracts.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Howestprime.Movies.Main.Controllers

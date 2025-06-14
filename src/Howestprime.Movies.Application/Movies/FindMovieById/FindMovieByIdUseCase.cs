@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Application.Contracts.Data;
 using Howestprime.Movies.Application.Contracts.Ports;
 using Howestprime.Movies.Domain.Shared;
-using Howestprime.Movies.Domain.Movie;
 using Howestprime.Movies.Domain.MovieEvent;
 using System.Collections.Generic;
 
