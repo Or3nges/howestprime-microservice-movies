@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Booking;
+using Howestprime.Movies.Domain.MovieEvent;
 using Howestprime.Movies.Domain.Enums;
 using Xunit;
 
@@ -11,15 +12,16 @@ namespace UnitTests.Domain
         [Fact]
         public void CreateBooking_Succeeds_WithValidData()
         {
-            var booking = new Booking(new BookingId(), 1, 1, BookingStatus.Open, PaymentStatus.Pending,
-                new List<int> { 1, 2 }, "Room A", DateTime.UtcNow);
+            var createdAt = DateTime.UtcNow;
+            var booking = new Booking(new BookingId(), new MovieEventId(), 1, 1, Howestprime.Movies.Domain.Booking.BookingStatus.Open, PaymentStatus.Pending,
+                new List<int> { 1, 2 }, "Room A", createdAt);
 
             booking.ValidateState();
 
             Assert.NotNull(booking);
             Assert.Equal(1, booking.StandardVisitors);
             Assert.Equal(1, booking.DiscountVisitors);
-            Assert.Equal(BookingStatus.Open, booking.Status);
+            Assert.Equal(Howestprime.Movies.Domain.Booking.BookingStatus.Open, booking.Status);
             Assert.Equal(PaymentStatus.Pending, booking.PaymentStatus);
         }
         
@@ -28,8 +30,9 @@ namespace UnitTests.Domain
         {
             Assert.Throws<InvalidOperationException>(() =>
             {
-                var booking = new Booking(new BookingId(), -1, 1, BookingStatus.Open, PaymentStatus.Pending,
-                    new List<int> { 1, 2 }, "Room A", DateTime.UtcNow);
+                var createdAt = DateTime.UtcNow;
+                var booking = new Booking(new BookingId(), new MovieEventId(), -1, 1, Howestprime.Movies.Domain.Booking.BookingStatus.Open, PaymentStatus.Pending,
+                    new List<int> { 1, 2 }, "Room A", createdAt);
                 booking.ValidateState();
             });
         }
@@ -39,8 +42,9 @@ namespace UnitTests.Domain
         {
             Assert.Throws<InvalidOperationException>(() =>
             {
-                var booking = new Booking(new BookingId(), 1, 1, BookingStatus.Open, PaymentStatus.Pending,
-                    new List<int> { 1, 2 }, "", DateTime.UtcNow);
+                var createdAt = DateTime.UtcNow;
+                var booking = new Booking(new BookingId(), new MovieEventId(), 1, 1, Howestprime.Movies.Domain.Booking.BookingStatus.Open, PaymentStatus.Pending,
+                    new List<int> { 1, 2 }, "", createdAt);
                 booking.ValidateState();
             });
         }
@@ -50,8 +54,9 @@ namespace UnitTests.Domain
         {
             Assert.Throws<InvalidOperationException>(() =>
             {
-                var booking = new Booking(new BookingId(), 1, 1, BookingStatus.Open, PaymentStatus.Pending,
-                    new List<int>(), "Room A", DateTime.UtcNow);
+                var createdAt = DateTime.UtcNow;
+                var booking = new Booking(new BookingId(), new MovieEventId(), 1, 1, Howestprime.Movies.Domain.Booking.BookingStatus.Open, PaymentStatus.Pending,
+                    new List<int>(), "Room A", createdAt);
                 booking.ValidateState();
             });
         }

@@ -1,6 +1,6 @@
 using System;
 using Howestprime.Movies.Application.Movies.FindMovieById;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
 using Xunit;
 
 namespace UnitTests.Application

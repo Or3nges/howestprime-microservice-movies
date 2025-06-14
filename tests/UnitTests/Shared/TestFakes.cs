@@ -1,5 +1,7 @@
 using Howestprime.Movies.Application.Contracts.Ports;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Movie;
+using Howestprime.Movies.Domain.MovieEvent;
+using Howestprime.Movies.Domain.Room;
 using System;
 using System.Collections.Generic;
 using System.Linq;

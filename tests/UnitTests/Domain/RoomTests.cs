@@ -1,5 +1,5 @@
 using System;
-using Howestprime.Movies.Domain.Entities;
+using Howestprime.Movies.Domain.Room;
 using Xunit;
 
 namespace UnitTests.Domain
