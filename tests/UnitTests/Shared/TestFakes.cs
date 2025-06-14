@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Domaincrafters.Domain;
 
 namespace UnitTests.Shared
 {
@@ -208,6 +209,23 @@ namespace UnitTests.Shared
         {
             PublishedEvents.Add(bookingOpenedEvent);
             return Task.CompletedTask;
+        }
+    }
+
+    public class FakeDomainEventSubscriber : IDomainEventSubscriber
+    {
+        public List<IDomainEvent> HandledEvents { get; } = new();
+
+        public void HandleEvent(IDomainEvent domainEvent)
+        {
+            HandledEvents.Add(domainEvent);
+        }
+
+        public Type SubscribedToEventType => typeof(IDomainEvent);
+        
+        public bool IsSubscribedTo(IDomainEvent domainEvent)
+        {
+            return true;
         }
     }
 } 
