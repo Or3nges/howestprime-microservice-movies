@@ -1,4 +1,5 @@
 using Howestprime.Movies.Application.Contracts.Ports;
+using Howestprime.Movies.Domain.Events;
 using Howestprime.Movies.Domain.Movie;
 using Howestprime.Movies.Domain.MovieEvent;
 using Howestprime.Movies.Domain.Room;
@@ -121,6 +122,22 @@ namespace UnitTests.Shared
         {
             return Task.FromResult(_events.Where(e => e.Time >= start && e.Time <= end));
         }
+
+        public Task<MovieEvent?> GetByIdAsync(MovieEventId id)
+        {
+            return Task.FromResult(_events.FirstOrDefault(e => e.Id == id));
+        }
+
+        public Task Save(MovieEvent movieEvent)
+        {
+            var existing = _events.FirstOrDefault(e => e.Id == movieEvent.Id);
+            if (existing != null)
+            {
+                _events.Remove(existing);
+            }
+            _events.Add(movieEvent);
+            return Task.CompletedTask;
+        }
     }
 
     public class FakeRoomRepository : IRoomRepository
@@ -157,6 +174,39 @@ namespace UnitTests.Shared
         
         public Task SeedRoomsAsync()
         {
+            return Task.CompletedTask;
+        }
+
+        public Task Save(Room room)
+        {
+            var existing = _rooms.FirstOrDefault(r => r.Id == room.Id);
+            if (existing != null)
+            {
+                _rooms.Remove(existing);
+            }
+            _rooms.Add(room);
+            return Task.CompletedTask;
+        }
+    }
+
+    public class FakeUnitOfWork : IUnitOfWork
+    {
+        public bool Committed { get; private set; }
+
+        public Task CommitAsync()
+        {
+            Committed = true;
+            return Task.CompletedTask;
+        }
+    }
+
+    public class FakeEventPublisher : IEventPublisher
+    {
+        public List<BookingOpened> PublishedEvents { get; } = new();
+
+        public Task PublishAsync(BookingOpened bookingOpenedEvent)
+        {
+            PublishedEvents.Add(bookingOpenedEvent);
             return Task.CompletedTask;
         }
     }
