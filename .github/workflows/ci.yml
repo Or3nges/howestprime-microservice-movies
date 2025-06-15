@@ -92,7 +92,7 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Publish .NET app
-        run: dotnet publish src/Howestprime.Movies.Main/Howestprime.Movies.Main.csproj --configuration Release -p:PublishProfile=production -p:ContainerImageTag=1.0.0
+        run: dotnet publish src/Howestprime.Movies.Main/Howestprime.Movies.Main.csproj --configuration Release -p:PublishProfile=production -p:ContainerImageTag=1.0.0 -p:ContainerRegistry=${{ vars.AZ_CONTAINER_REGISTRY }}
 
   deploy:
     runs-on: ubuntu-latest
