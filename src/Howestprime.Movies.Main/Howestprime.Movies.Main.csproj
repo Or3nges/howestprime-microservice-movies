@@ -14,11 +14,18 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
-     <Content Include="../../config/asyncapi.yaml" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Howestprime.Movies.Infrastructure\Howestprime.Movies.Infrastructure.csproj" />
     <ProjectReference Include="..\Howestprime.Movies.Application\Howestprime.Movies.Application.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\config\asyncapi.yaml">
+      <Link>config\asyncapi.yaml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
