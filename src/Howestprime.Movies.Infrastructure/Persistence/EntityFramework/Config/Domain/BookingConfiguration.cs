@@ -14,7 +14,6 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
         {
             builder.HasKey(b => b.Id);
             
-            // Configure relationship with MovieEvent
             builder.HasOne(b => b.MovieEvent)
                 .WithMany(me => me.Bookings)
                 .HasForeignKey(b => b.MovieEventId)
@@ -27,14 +26,12 @@ namespace Howestprime.Movies.Infrastructure.Persistence.EntityFramework
             builder.Property(b => b.RoomName).IsRequired();
             builder.Property(b => b.CreatedAt).IsRequired();
             
-            // Configure SeatNumbers to be stored as a comma-separated string
             builder.Property(b => b.SeatNumbers)
                 .HasConversion(
                     v => string.Join(",", v),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
                          .Select(int.Parse)
                          .ToList(),
-                    // Add a value comparer for the collection
                     new ValueComparer<List<int>>(
                         (c1, c2) => (c1 == null && c2 == null) || (c1 != null && c2 != null && c1.SequenceEqual(c2)),
                         c => c == null ? 0 : c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
