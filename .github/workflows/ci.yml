@@ -84,7 +84,11 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Log in to Azure Container Registry
-        run: echo ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL_PASSWORD }} | docker login ${{ vars.AZ_CONTAINER_REGISTRY }} -u ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL }} --password-stdin
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ vars.AZ_CONTAINER_REGISTRY }}
+          username: ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL }}
+          password: ${{ secrets.HOWESTPRIME_WIDE_CI_SERVICE_PRINCIPAL_PASSWORD }}
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
