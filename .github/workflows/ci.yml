@@ -128,9 +128,11 @@ jobs:
           \
           --env-vars \
           ASPNETCORE_ENVIRONMENT=Production \
+          "Database__Host=${{vars.HOWESTPRIME_MOVIES_P_PSQL_SERVER}}" \
+          "Database__Database=${{vars.HOWESTPRIME_MOVIES_P_PSQL_DATABASE}}" \
+          "Database__Port=${{vars.HOWESTPRIME_MOVIES_P_PSQL_PORT}}" \
           "Database__Password=secretref:db-password" \
           "Database__Username=${{vars.HOWESTPRIME_MOVIES_P_PSQL_LOGIN}}" \
-          "Database__ConnectionString=${{vars.HOWESTPRIME_MOVIES_P_PSQL_CONNECTION_STRING}}" \
           "MessageBroker__Hostname=${{vars.HOWESTPRIME_WIDE_P_MESSAGEBROKER_HOSTNAME}}" \
           "MessageBroker__VirtualHost=${{vars.HOWESTPRIME_WIDE_P_MESSAGEBROKER_VHOST}}" \
           "MessageBroker__Password=secretref:mb-password" \
