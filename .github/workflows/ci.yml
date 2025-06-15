@@ -91,7 +91,7 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build local container image
-        run: dotnet publish src/Howestprime.Movies.Main/Howestprime.Movies.Main.csproj --configuration Release -p:ContainerRepository=microservice-movies -p:ContainerImageTag=1.0.0
+        run: dotnet publish src/Howestprime.Movies.Main/Howestprime.Movies.Main.csproj --configuration Release -t:PublishContainer -p:ContainerRepository=microservice-movies -p:ContainerImageTag=1.0.0
 
       - name: Tag and push image to ACR
         run: |
