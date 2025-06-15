@@ -51,8 +51,7 @@ namespace Howestprime.Movies.Infrastructure.Migrations
                     MovieId = table.Column<string>(type: "text", nullable: false),
                     RoomId = table.Column<string>(type: "text", nullable: false),
                     Time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Capacity = table.Column<int>(type: "integer", nullable: false),
-                    Visitors = table.Column<int>(type: "integer", nullable: false)
+                    Capacity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

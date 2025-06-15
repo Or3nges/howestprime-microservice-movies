@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Howestprime.Movies.Infrastructure.Migrations
 {
     [DbContext(typeof(MoviesDbContext))]
-    [Migration("20250610210616_InitialSchema")]
-    partial class InitialSchema
+    [Migration("20250615024236_RemoveVisitors")]
+    partial class RemoveVisitors
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Howestprime.Movies.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Howestprime.Movies.Domain.Entities.Booking", b =>
+            modelBuilder.Entity("Howestprime.Movies.Domain.Booking.Booking", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -37,6 +37,7 @@ namespace Howestprime.Movies.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("MovieEventId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("PaymentStatus")
@@ -63,7 +64,7 @@ namespace Howestprime.Movies.Infrastructure.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("Howestprime.Movies.Domain.Entities.Movie", b =>
+            modelBuilder.Entity("Howestprime.Movies.Domain.Movie.Movie", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -103,7 +104,7 @@ namespace Howestprime.Movies.Infrastructure.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("Howestprime.Movies.Domain.Entities.MovieEvent", b =>
+            modelBuilder.Entity("Howestprime.Movies.Domain.MovieEvent.MovieEvent", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -131,7 +132,7 @@ namespace Howestprime.Movies.Infrastructure.Migrations
                     b.ToTable("MovieEvents");
                 });
 
-            modelBuilder.Entity("Howestprime.Movies.Domain.Entities.Room", b =>
+            modelBuilder.Entity("Howestprime.Movies.Domain.Room.Room", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -148,29 +149,33 @@ namespace Howestprime.Movies.Infrastructure.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("Howestprime.Movies.Domain.Entities.Booking", b =>
+            modelBuilder.Entity("Howestprime.Movies.Domain.Booking.Booking", b =>
                 {
-                    b.HasOne("Howestprime.Movies.Domain.Entities.MovieEvent", null)
+                    b.HasOne("Howestprime.Movies.Domain.MovieEvent.MovieEvent", "MovieEvent")
                         .WithMany("Bookings")
-                        .HasForeignKey("MovieEventId");
+                        .HasForeignKey("MovieEventId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("MovieEvent");
                 });
 
-            modelBuilder.Entity("Howestprime.Movies.Domain.Entities.MovieEvent", b =>
+            modelBuilder.Entity("Howestprime.Movies.Domain.MovieEvent.MovieEvent", b =>
                 {
-                    b.HasOne("Howestprime.Movies.Domain.Entities.Movie", null)
+                    b.HasOne("Howestprime.Movies.Domain.Movie.Movie", null)
                         .WithMany()
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Howestprime.Movies.Domain.Entities.Room", null)
+                    b.HasOne("Howestprime.Movies.Domain.Room.Room", null)
                         .WithMany()
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Howestprime.Movies.Domain.Entities.MovieEvent", b =>
+            modelBuilder.Entity("Howestprime.Movies.Domain.MovieEvent.MovieEvent", b =>
                 {
                     b.Navigation("Bookings");
                 });

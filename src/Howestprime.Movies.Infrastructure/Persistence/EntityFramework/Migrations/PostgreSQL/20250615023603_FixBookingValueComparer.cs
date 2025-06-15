@@ -14,9 +14,6 @@ namespace Howestprime.Movies.Infrastructure.Migrations
                 name: "FK_Bookings_MovieEvents_MovieEventId",
                 table: "Bookings");
 
-            migrationBuilder.DropColumn(
-                name: "Visitors",
-                table: "MovieEvents");
 
             migrationBuilder.AlterColumn<string>(
                 name: "MovieEventId",
@@ -44,12 +41,6 @@ namespace Howestprime.Movies.Infrastructure.Migrations
                 name: "FK_Bookings_MovieEvents_MovieEventId",
                 table: "Bookings");
 
-            migrationBuilder.AddColumn<int>(
-                name: "Visitors",
-                table: "MovieEvents",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
 
             migrationBuilder.AlterColumn<string>(
                 name: "MovieEventId",
