@@ -90,8 +90,13 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Publish .NET app
-        run: dotnet publish src/Howestprime.Movies.Main/Howestprime.Movies.Main.csproj --configuration Release -p:ContainerRegistry=${{ vars.AZ_CONTAINER_REGISTRY }} -p:ContainerRepository=microservice-movies -p:ContainerImageTag=1.0.0
+      - name: Build local container image
+        run: dotnet publish src/Howestprime.Movies.Main/Howestprime.Movies.Main.csproj --configuration Release -p:ContainerRepository=microservice-movies -p:ContainerImageTag=1.0.0
+
+      - name: Tag and push image to ACR
+        run: |
+          docker tag microservice-movies:1.0.0 ${{ vars.AZ_CONTAINER_REGISTRY }}/microservice-movies:1.0.0
+          docker push ${{ vars.AZ_CONTAINER_REGISTRY }}/microservice-movies:1.0.0
 
   deploy:
     runs-on: ubuntu-latest
