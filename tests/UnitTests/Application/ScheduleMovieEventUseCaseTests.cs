@@ -62,8 +62,7 @@ namespace UnitTests.Application
                 MovieId = movieId.Value,
                 RoomId = roomId.Value,
                 StartDate = startDate,
-                Capacity = 100,
-                Visitors = 0
+                Capacity = 100
             };
 
             // Act
@@ -92,8 +91,7 @@ namespace UnitTests.Application
                 MovieId = Guid.NewGuid().ToString(),
                 RoomId = roomId.Value,
                 StartDate = DateTime.UtcNow.AddDays(1),
-                Capacity = 100,
-                Visitors = 0
+                Capacity = 100
             };
 
             // Act & Assert
@@ -125,8 +123,7 @@ namespace UnitTests.Application
                 MovieId = movieId.Value,
                 RoomId = Guid.NewGuid().ToString(),
                 StartDate = DateTime.UtcNow.AddDays(1),
-                Capacity = 100,
-                Visitors = 0
+                Capacity = 100
             };
 
             // Act & Assert
@@ -174,8 +171,7 @@ namespace UnitTests.Application
                 MovieId = movieId.Value,
                 RoomId = roomId.Value,
                 StartDate = startDate,
-                Capacity = 100,
-                Visitors = 0
+                Capacity = 100
             };
 
             // Act & Assert
@@ -214,8 +210,7 @@ namespace UnitTests.Application
                 MovieId = movieId.Value,
                 RoomId = roomId.Value,
                 StartDate = startDate,
-                Capacity = 100,
-                Visitors = 0
+                Capacity = 100
             };
 
             // Act & Assert
@@ -253,8 +248,7 @@ namespace UnitTests.Application
                 MovieId = movieId.Value,
                 RoomId = roomId.Value,
                 StartDate = startDate,
-                Capacity = 0,
-                Visitors = 0
+                Capacity = 0
             };
 
             // Act

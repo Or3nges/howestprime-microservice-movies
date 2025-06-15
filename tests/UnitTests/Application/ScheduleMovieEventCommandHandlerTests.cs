@@ -38,8 +38,7 @@ namespace UnitTests.Application
                 MovieId = movie.Id.Value,
                 RoomId = room.Id.Value,
                 StartDate = DateTime.UtcNow.AddDays(1),
-                Capacity = 100,
-                Visitors = 0
+                Capacity = 100
             };
 
             // Act

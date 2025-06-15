@@ -1,6 +1,7 @@
 using Howestprime.Movies.Infrastructure.Messaging.Shared.Contracts;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using System.IO;
 
 namespace Howestprime.Movies.Infrastructure.Messaging.Shared;
 
@@ -39,7 +40,8 @@ public sealed class AmqpBrokerConfigurator
     {
         var host = $"amqp://{username}:{password}@{hostname}:{port}/{virtualHost}";
         logger.LogInformation("Connecting to AMQP broker at {Host}.", host);
-        var asyncApiYaml = File.ReadAllText(asyncApiSpecification);
+        var fullPathToSpec = Path.Combine(AppContext.BaseDirectory, asyncApiSpecification);
+        var asyncApiYaml = File.ReadAllText(fullPathToSpec);
         var (brokerConfig, publishers, consumers) = AsyncApiParser.ParseAsyncApi(asyncApiYaml);
         return new AmqpBrokerConfigurator(logger, host, consumers, publishers, brokerConfig);
     }
