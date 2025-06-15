@@ -8,6 +8,7 @@ using Howestprime.Movies.Domain.Movie;
 using Howestprime.Movies.Domain.MovieEvent;
 using Howestprime.Movies.Domain.Room;
 using Howestprime.Movies.Application.Contracts.Ports;
+using Npgsql;
 
 namespace Howestprime.Movies.Main.Modules.Persistence;
 
@@ -32,28 +33,42 @@ public static class EntityFrameworkServices
         IConfiguration configuration
     )
     {
-        string databaseProvider = configuration.GetValue<string>("Database:Provider")!;
-        string connectionString = configuration.GetValue<string>("Database:ConnectionString")!;
-        
-        switch (databaseProvider)
+       string connectionString;
+
+        var dbConfig = configuration.GetSection("Database");
+        var host = dbConfig["Host"];
+
+        if (!string.IsNullOrEmpty(host))
         {
-            case "PostgreSQL":
-                services.AddDbContext<DomainContextBase, DomainContextPostgres>();
-                services.AddDbContext<QueryContextBase, QueryContextPostgres>();
-                
-                // Register MoviesDbContext with the connection string
-                services.AddDbContext<MoviesDbContext>(options =>
-                {
-                    options.UseNpgsql(connectionString);
-                });
-                
-                // Register DbContext for EntityFrameworkUoW
-                services.AddScoped<DbContext>(provider => provider.GetRequiredService<MoviesDbContext>());
-                
-                break;
-            default:
-                throw new NotSupportedException($"Database provider '{databaseProvider}' is not supported.");
+            connectionString = new NpgsqlConnectionStringBuilder
+            {
+                Host = host,
+                Database = dbConfig["Database"],
+                Port = dbConfig.GetValue<int>("Port"),
+                Username = dbConfig["Username"],
+                Password = dbConfig["Password"], 
+                SslMode = SslMode.Require,
+                TrustServerCertificate = true
+            }.ConnectionString;
         }
+        else
+        {
+            connectionString = dbConfig["ConnectionString"]!;
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidOperationException("Database connection string is not configured. Please set either the individual 'Database' settings (Host, Port, etc.) as environment variables, or provide a 'Database:ConnectionString' in appsettings.json.");
+            }
+        }
+
+        services.AddDbContext<DomainContextBase, DomainContextPostgres>();
+        services.AddDbContext<QueryContextBase, QueryContextPostgres>();
+        
+        services.AddDbContext<MoviesDbContext>(options =>
+        {
+            options.UseNpgsql(connectionString);
+        });
+        
+        services.AddScoped<DbContext>(provider => provider.GetRequiredService<MoviesDbContext>());
         
         return services;
     }
